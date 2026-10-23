@@ -25,7 +25,12 @@ function ProductDetails({p,onClose,seller=false}:{p:Product;onClose:()=>void;sel
 /** The agents run the whole exchange; no human sees the twenty initial bundles:
  * context → 20 bundles → check → buyer-agent ratings → seller analysis → final bundle → check. */
 const NEGOTIATION_MS=8400;
+/** A throw here would leave the session negotiating forever, so surface it as a failed check instead. */
 function runAgentExchange(s:Session):Session {
+ try{return agentExchange(s)}
+ catch(error){return event({...s,status:'invalid',checks:[...s.checks,{stage:'final',valid:false,errors:[`agent exchange failed: ${error instanceof Error?error.message:String(error)}`]}]},'Agent exchange failed')}
+}
+function agentExchange(s:Session):Session {
  const offers=initialOffers(s.profile,s.rules);
  const base={...s,context:offers.context,offers:offers.payload,bundles:offers.bundles,checks:[offers.check]};
  if(!offers.check.valid)return event({...base,status:'invalid'},'Middle man rejected the twenty bundles');

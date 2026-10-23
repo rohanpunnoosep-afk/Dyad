@@ -151,7 +151,9 @@ export function finalOffer(profile:Profile,rules:Rules,bundles:Bundle[],ratings:
  const best=[...ratings.ratings].sort((a,b)=>b.probability-a.probability)[0];
  const original=bundles.find(bundle=>bundle.id===best.id)!;
  const skus=original.skus.filter(sku=>!analysis.drop_skus.includes(sku)&&analysis.keep_skus.includes(sku));
- if(skus.length<2)skus.push(...analysis.keep_skus.filter(sku=>!skus.includes(sku)).slice(0,2-skus.length));
+ // keep_skus is empty when every bundle rated under 50%; then fall back to the best-rated bundles' undropped pieces.
+ const ranked=[...ratings.ratings].sort((a,b)=>b.probability-a.probability).flatMap(r=>bundles.find(bundle=>bundle.id===r.id)!.skus);
+ for(const sku of [...analysis.keep_skus,...ranked])if(skus.length<2&&!skus.includes(sku)&&!analysis.drop_skus.includes(sku))skus.push(sku);
  // Terms: the return window and refund level the buyer rated highest, never shorter than they asked for.
  const top=(type:'return_window'|'refund')=>Object.entries(analysis.attribute_avgs[type]).sort((a,b)=>b[1]-a[1])[0][0];
  let window=top('return_window') as ReturnWindow;
