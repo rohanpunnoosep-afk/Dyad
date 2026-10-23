@@ -44,10 +44,10 @@ const filename = (value:string) => !/[\\/]/.test(value) && /^[^\s]+\.[a-z0-9]+$/
 /** Unknown categories fail closed rather than silently bypass the size rule. */
 function slot(item:InventoryItem):'top'|'bottom'|'shoe'|'one-size'|null {
  const category=normalize(item.category).replace(/[-_]/g,' ');
- if (['accessory','accessories','socks','hat','hats','belt','belts'].includes(category) && item.size==='OS') return 'one-size';
+ if (['accessory','accessories','socks','hat','hats','cap','caps','beanie','beanies','belt','belts'].includes(category) && item.size==='OS') return 'one-size';
  if (['pants','pant','shorts','short','jeans','jean','trousers','trouser','joggers','jogger','leggings'].includes(category)) return 'bottom';
  if (['boots','boot','sneakers','sneaker','loafers','loafer','shoes','shoe','sandals','sandal'].includes(category)) return 'shoe';
- if (['jacket','jackets','tee','tees','t shirt','t shirts','shirt','shirts','hoodie','hoodies','sweatshirt','sweatshirts','crewneck','blazer','blazers','top','tops','sweater','sweaters','overshirt'].includes(category)) return 'top';
+ if (['jacket','jackets','tee','tees','t shirt','t shirts','shirt','shirts','hoodie','hoodies','sweatshirt','sweatshirts','crewneck','blazer','blazers','top','tops','polo','polos','sweater','sweaters','overshirt'].includes(category)) return 'top';
  return null;
 }
 
