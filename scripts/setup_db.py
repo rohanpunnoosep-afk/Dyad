@@ -24,12 +24,14 @@ def main() -> None:
             items = json.load(f)
         with conn.cursor() as cur:
             cur.executemany(
-                """insert into items (sku, name, category, color, material, size, price, stock, image)
+                """insert into items (sku, name, category, color, material, size, price, stock, image,
+                                      margin_pct, delivery_days)
                    values (%(sku)s, %(name)s, %(category)s, %(color)s, %(material)s, %(size)s, %(price)s,
-                           %(stock)s, %(image)s)
+                           %(stock)s, %(image)s, %(margin_pct)s, %(delivery_days)s)
                    on conflict (sku) do update set name = excluded.name, category = excluded.category,
                        color = excluded.color, material = excluded.material, size = excluded.size,
-                       price = excluded.price, stock = excluded.stock, image = excluded.image""",
+                       price = excluded.price, stock = excluded.stock, image = excluded.image,
+                       margin_pct = excluded.margin_pct, delivery_days = excluded.delivery_days""",
                 items,
             )
         print(f"seeded {len(items)} items")

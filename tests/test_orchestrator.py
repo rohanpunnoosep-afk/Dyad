@@ -2,7 +2,7 @@ import asyncio
 
 from middleman.orchestrator import FINAL_ROUND, ROUND, run_negotiation
 from models.schemas import Status, Step
-from tests.conftest import COLD_ITEM, FINAL_SKUS, HOT_ITEM, FakeAgents
+from tests.conftest import COLD_ITEM, FINAL_SKUS, HOT_ITEM, TERM_VARIANTS, FakeAgents
 
 
 def run(coro):
@@ -16,15 +16,15 @@ async def _create_and_run(repo, agents, owner="o1"):
     return neg.id
 
 
-def test_full_run_one_round_of_five_then_analysis_and_final(repo, items):
+def test_full_run_one_round_of_twenty_then_analysis_and_final(repo, items):
     agents = FakeAgents(items)
 
     async def go():
         nid = await _create_and_run(repo, agents)
         neg = await repo.get_negotiation(nid)
         assert neg.status == Status.DONE and neg.step == Step.DONE
-        assert len(await repo.list_bundles(nid, ROUND)) == 5
-        assert len(await repo.list_judgments(nid, ROUND)) == 5
+        assert len(await repo.list_bundles(nid, ROUND)) == 20
+        assert len(await repo.list_judgments(nid, ROUND)) == 20
         [final] = await repo.list_bundles(nid, FINAL_ROUND)
         assert final.skus == FINAL_SKUS and COLD_ITEM not in final.skus
 
@@ -36,7 +36,7 @@ def test_full_run_one_round_of_five_then_analysis_and_final(repo, items):
         assert COLD_ITEM in analysis.drop_skus and "JKT-03-NV-M" in analysis.drop_skus  # cold via heat
         assert {c.sku for c in analysis.item_checks} == {"JKT-03-NV-M", COLD_ITEM, "TRS-01-GR-32"}
         formal = next(f for f in analysis.fails if f.value == "formal")
-        assert formal.confirmed and formal.votes == 2 and formal.avg_prob == 0.1
+        assert formal.confirmed and formal.votes == 8 and formal.avg_prob == 0.1  # 2 items x 4 term variants
 
         events = await repo.list_events(nid)
         assert [e.type for e in events] == [
@@ -44,8 +44,9 @@ def test_full_run_one_round_of_five_then_analysis_and_final(repo, items):
             "decision", "done",
         ]
         proposed = events[2].payload["bundles"]
-        assert len(proposed) == 5
+        assert len(proposed) == 20
         assert proposed[0]["images"] == [f"{s}.jpg" for s in proposed[0]["skus"]]
+        assert {(b["shipping"], b["return_window"], b["refund_pct"]) for b in proposed} == set(TERM_VARIANTS)
         offer = events[-3].payload["final"]
         assert events[-2].payload["decision"] == "accept" and events[-2].payload["id"] == final.id
         [decision] = await repo.list_judgments(nid, FINAL_ROUND)
@@ -55,7 +56,7 @@ def test_full_run_one_round_of_five_then_analysis_and_final(repo, items):
         assert offer["why"] == "pitch for final"
 
     run(go())
-    assert agents.seen["check_keys"] == ["B2"]  # only the formal bundle is below 0.5
+    assert agents.seen["check_keys"] == ["B2", "B7", "B12", "B17"]  # only the formal bundles are below 0.5
     assert "style" not in agents.seen["attribute_avgs"]  # style averages need the analyst's labels
     assert agents.calls["rate_bundles"] == 1
 
@@ -100,7 +101,7 @@ def test_failure_marks_failed_then_retry_resumes_without_redoing_steps(repo, ite
         assert await repo.acquire_lease(nid, "o2", 60)
         await run_negotiation(repo, nid, "o2", agents)
         assert (await repo.get_negotiation(nid)).status == Status.DONE
-        assert len(await repo.list_bundles(nid, ROUND)) == 5  # proposals were not redone
+        assert len(await repo.list_bundles(nid, ROUND)) == 20  # proposals were not redone
 
     run(go())
     assert agents.calls["build_brief"] == 1

@@ -7,6 +7,7 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from db.repo import MemoryRepo, _MemoryStore, load_seed_items  # noqa: E402
+from middleman import pricing  # noqa: E402
 from middleman.orchestrator import Agents  # noqa: E402
 from models.schemas import (  # noqa: E402
     AnalysisDraft,
@@ -41,6 +42,9 @@ ROUND_BUNDLES = {
     "rugged": [HOT_ITEM, "JNS-01-IN-32", "BOT-01-BR-10"],
 }
 FINAL_SKUS = [HOT_ITEM, "TEE-01-OL-M", "PNT-01-OL-32", "BOT-01-BR-10"]
+# (shipping, return_window, refund_pct). Each ROUND_BUNDLES set is offered once per variant: 5 x 4 = 20.
+TERM_VARIANTS = [("standard", "2 weeks", 30), ("express", "2 months", 75),
+                 ("standard", "6 months", 100), ("priority", "2 months", 30)]
 
 STYLES = {HOT_ITEM: "workwear", "TEE-01-OL-M": "workwear", "PNT-01-OL-32": "workwear",
           "BOT-01-BR-10": "workwear", "JKT-03-NV-M": "sporty", COLD_ITEM: "formal",
@@ -48,9 +52,16 @@ STYLES = {HOT_ITEM: "workwear", "TEE-01-OL-M": "workwear", "PNT-01-OL-32": "work
           "JNS-01-IN-32": "minimal", "HOD-02-HG-M": "loungewear", "JOG-01-CH-32": "loungewear"}
 
 
-def draft(name: str, skus: List[str], inventory: Dict, ratio: float = 0.9) -> BundleDraft:
-    total = sum(inventory[s].price for s in skus)
-    return BundleDraft(name=name, skus=skus, price=round(total * ratio, 2), pitch=f"pitch for {name}")
+def draft(name: str, skus: List[str], inventory: Dict, terms=TERM_VARIANTS[0]) -> BundleDraft:
+    """A bundle priced by the seller's pricing policy, as the real seller agent does."""
+    shipping, window, refund = terms
+    q = pricing.quote([inventory[s] for s in skus], shipping, window, refund, BRIEF.delivery_days)
+    return BundleDraft(name=name, skus=skus, price=q.price, pitch=f"pitch for {name}", shipping=shipping,
+                       delivery_days=q.delivery_days, return_window=window, refund_pct=refund)
+
+
+def round_drafts(inventory: Dict) -> List[BundleDraft]:
+    return [draft(k, v, inventory, t) for t in TERM_VARIANTS for k, v in ROUND_BUNDLES.items()]
 
 
 class FakeAgents(Agents):
@@ -92,8 +103,8 @@ class FakeAgents(Agents):
         if self.bad_first == "propose_bundles" and n == 1:
             # no jacket in the first bundle, and the rest are fine
             bad = [draft("no-jacket", ["TEE-01-OL-M", "PNT-01-OL-32"], self.inv)]
-            return bad + [draft(k, v, self.inv) for k, v in list(ROUND_BUNDLES.items())[1:]]
-        return [draft(k, v, self.inv) for k, v in ROUND_BUNDLES.items()][:count]
+            return bad + round_drafts(self.inv)[1:count]
+        return round_drafts(self.inv)[:count]
 
     async def analyze_round(self, brief, keyed, judgments, inventory, heat, attribute_avgs, check_keys):
         self._tick("analyze_round")

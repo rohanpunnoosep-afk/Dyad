@@ -8,7 +8,9 @@
     "size": "S",
     "price": 68,
     "stock": 3,
-    "image": "HDY-01-GR-S.jpg"
+    "image": "HDY-01-GR-S.jpg",
+    "margin_pct": 62,
+    "delivery_days": 3
   },
   {
     "sku": "HDY-01-GR-M",
@@ -19,7 +21,9 @@
     "size": "M",
     "price": 68,
     "stock": 3,
-    "image": "HDY-01-GR-M.jpg"
+    "image": "HDY-01-GR-M.jpg",
+    "margin_pct": 62,
+    "delivery_days": 3
   },
   {
     "sku": "HDY-01-GR-L",
@@ -30,7 +34,9 @@
     "size": "L",
     "price": 68,
     "stock": 3,
-    "image": "HDY-01-GR-L.jpg"
+    "image": "HDY-01-GR-L.jpg",
+    "margin_pct": 62,
+    "delivery_days": 3
   },
   {
     "sku": "HDY-01-GR-XL",
@@ -41,7 +47,9 @@
     "size": "XL",
     "price": 68,
     "stock": 3,
-    "image": "HDY-01-GR-XL.jpg"
+    "image": "HDY-01-GR-XL.jpg",
+    "margin_pct": 62,
+    "delivery_days": 3
   },
   {
     "sku": "PNT-01-TP-S",
@@ -52,7 +60,9 @@
     "size": "S",
     "price": 58,
     "stock": 3,
-    "image": "PNT-01-TP-S.jpg"
+    "image": "PNT-01-TP-S.jpg",
+    "margin_pct": 58,
+    "delivery_days": 4
   },
   {
     "sku": "PNT-01-TP-M",
@@ -63,7 +73,9 @@
     "size": "M",
     "price": 58,
     "stock": 3,
-    "image": "PNT-01-TP-M.jpg"
+    "image": "PNT-01-TP-M.jpg",
+    "margin_pct": 58,
+    "delivery_days": 4
   },
   {
     "sku": "PNT-01-TP-L",
@@ -74,7 +86,9 @@
     "size": "L",
     "price": 58,
     "stock": 3,
-    "image": "PNT-01-TP-L.jpg"
+    "image": "PNT-01-TP-L.jpg",
+    "margin_pct": 58,
+    "delivery_days": 4
   },
   {
     "sku": "PNT-01-TP-XL",
@@ -85,7 +99,9 @@
     "size": "XL",
     "price": 58,
     "stock": 3,
-    "image": "PNT-01-TP-XL.jpg"
+    "image": "PNT-01-TP-XL.jpg",
+    "margin_pct": 58,
+    "delivery_days": 4
   },
   {
     "sku": "TEE-01-WH-S",
@@ -96,7 +112,9 @@
     "size": "S",
     "price": 32,
     "stock": 3,
-    "image": "TEE-01-WH-S.jpg"
+    "image": "TEE-01-WH-S.jpg",
+    "margin_pct": 72,
+    "delivery_days": 2
   },
   {
     "sku": "TEE-01-WH-M",
@@ -107,7 +125,9 @@
     "size": "M",
     "price": 32,
     "stock": 3,
-    "image": "TEE-01-WH-M.jpg"
+    "image": "TEE-01-WH-M.jpg",
+    "margin_pct": 72,
+    "delivery_days": 2
   },
   {
     "sku": "TEE-01-WH-L",
@@ -118,7 +138,9 @@
     "size": "L",
     "price": 32,
     "stock": 3,
-    "image": "TEE-01-WH-L.jpg"
+    "image": "TEE-01-WH-L.jpg",
+    "margin_pct": 72,
+    "delivery_days": 2
   },
   {
     "sku": "TEE-01-WH-XL",
@@ -129,7 +151,9 @@
     "size": "XL",
     "price": 32,
     "stock": 3,
-    "image": "TEE-01-WH-XL.jpg"
+    "image": "TEE-01-WH-XL.jpg",
+    "margin_pct": 72,
+    "delivery_days": 2
   },
   {
     "sku": "SWE-01-WH-S",
@@ -140,7 +164,9 @@
     "size": "S",
     "price": 62,
     "stock": 3,
-    "image": "SWE-01-WH-S.jpg"
+    "image": "SWE-01-WH-S.jpg",
+    "margin_pct": 60,
+    "delivery_days": 5
   },
   {
     "sku": "SWE-01-WH-M",
@@ -151,7 +177,9 @@
     "size": "M",
     "price": 62,
     "stock": 3,
-    "image": "SWE-01-WH-M.jpg"
+    "image": "SWE-01-WH-M.jpg",
+    "margin_pct": 60,
+    "delivery_days": 5
   },
   {
     "sku": "SWE-01-WH-L",
@@ -162,7 +190,9 @@
     "size": "L",
     "price": 62,
     "stock": 3,
-    "image": "SWE-01-WH-L.jpg"
+    "image": "SWE-01-WH-L.jpg",
+    "margin_pct": 60,
+    "delivery_days": 5
   },
   {
     "sku": "SWE-01-WH-XL",
@@ -173,7 +203,9 @@
     "size": "XL",
     "price": 62,
     "stock": 3,
-    "image": "SWE-01-WH-XL.jpg"
+    "image": "SWE-01-WH-XL.jpg",
+    "margin_pct": 60,
+    "delivery_days": 5
   },
   {
     "sku": "SRT-01-OT-S",
@@ -184,7 +216,9 @@
     "size": "S",
     "price": 44,
     "stock": 3,
-    "image": "SRT-01-OT-S.jpg"
+    "image": "SRT-01-OT-S.jpg",
+    "margin_pct": 66,
+    "delivery_days": 3
   },
   {
     "sku": "SRT-01-OT-M",
@@ -195,7 +229,9 @@
     "size": "M",
     "price": 44,
     "stock": 3,
-    "image": "SRT-01-OT-M.jpg"
+    "image": "SRT-01-OT-M.jpg",
+    "margin_pct": 66,
+    "delivery_days": 3
   },
   {
     "sku": "SRT-01-OT-L",
@@ -206,7 +242,9 @@
     "size": "L",
     "price": 44,
     "stock": 3,
-    "image": "SRT-01-OT-L.jpg"
+    "image": "SRT-01-OT-L.jpg",
+    "margin_pct": 66,
+    "delivery_days": 3
   },
   {
     "sku": "SRT-01-OT-XL",
@@ -217,7 +255,9 @@
     "size": "XL",
     "price": 44,
     "stock": 3,
-    "image": "SRT-01-OT-XL.jpg"
+    "image": "SRT-01-OT-XL.jpg",
+    "margin_pct": 66,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-02-BK-S",
@@ -228,7 +268,9 @@
     "size": "S",
     "price": 38,
     "stock": 3,
-    "image": "TEE-02-BK-S.jpg"
+    "image": "TEE-02-BK-S.jpg",
+    "margin_pct": 70,
+    "delivery_days": 6
   },
   {
     "sku": "TEE-02-BK-M",
@@ -239,7 +281,9 @@
     "size": "M",
     "price": 38,
     "stock": 3,
-    "image": "TEE-02-BK-M.jpg"
+    "image": "TEE-02-BK-M.jpg",
+    "margin_pct": 70,
+    "delivery_days": 6
   },
   {
     "sku": "TEE-02-BK-L",
@@ -250,7 +294,9 @@
     "size": "L",
     "price": 38,
     "stock": 3,
-    "image": "TEE-02-BK-L.jpg"
+    "image": "TEE-02-BK-L.jpg",
+    "margin_pct": 70,
+    "delivery_days": 6
   },
   {
     "sku": "TEE-02-BK-XL",
@@ -261,7 +307,9 @@
     "size": "XL",
     "price": 38,
     "stock": 3,
-    "image": "TEE-02-BK-XL.jpg"
+    "image": "TEE-02-BK-XL.jpg",
+    "margin_pct": 70,
+    "delivery_days": 6
   },
   {
     "sku": "PNT-02-OL-S",
@@ -272,7 +320,9 @@
     "size": "S",
     "price": 56,
     "stock": 3,
-    "image": "PNT-02-OL-S.jpg"
+    "image": "PNT-02-OL-S.jpg",
+    "margin_pct": 52,
+    "delivery_days": 7
   },
   {
     "sku": "PNT-02-OL-M",
@@ -283,7 +333,9 @@
     "size": "M",
     "price": 56,
     "stock": 3,
-    "image": "PNT-02-OL-M.jpg"
+    "image": "PNT-02-OL-M.jpg",
+    "margin_pct": 52,
+    "delivery_days": 7
   },
   {
     "sku": "PNT-02-OL-L",
@@ -294,7 +346,9 @@
     "size": "L",
     "price": 56,
     "stock": 3,
-    "image": "PNT-02-OL-L.jpg"
+    "image": "PNT-02-OL-L.jpg",
+    "margin_pct": 52,
+    "delivery_days": 7
   },
   {
     "sku": "PNT-02-OL-XL",
@@ -305,7 +359,9 @@
     "size": "XL",
     "price": 56,
     "stock": 3,
-    "image": "PNT-02-OL-XL.jpg"
+    "image": "PNT-02-OL-XL.jpg",
+    "margin_pct": 52,
+    "delivery_days": 7
   },
   {
     "sku": "HDY-02-TP-S",
@@ -316,7 +372,9 @@
     "size": "S",
     "price": 72,
     "stock": 3,
-    "image": "HDY-02-TP-S.jpg"
+    "image": "HDY-02-TP-S.jpg",
+    "margin_pct": 57,
+    "delivery_days": 4
   },
   {
     "sku": "HDY-02-TP-M",
@@ -327,7 +385,9 @@
     "size": "M",
     "price": 72,
     "stock": 3,
-    "image": "HDY-02-TP-M.jpg"
+    "image": "HDY-02-TP-M.jpg",
+    "margin_pct": 57,
+    "delivery_days": 4
   },
   {
     "sku": "HDY-02-TP-L",
@@ -338,7 +398,9 @@
     "size": "L",
     "price": 72,
     "stock": 3,
-    "image": "HDY-02-TP-L.jpg"
+    "image": "HDY-02-TP-L.jpg",
+    "margin_pct": 57,
+    "delivery_days": 4
   },
   {
     "sku": "HDY-02-TP-XL",
@@ -349,7 +411,9 @@
     "size": "XL",
     "price": 72,
     "stock": 3,
-    "image": "HDY-02-TP-XL.jpg"
+    "image": "HDY-02-TP-XL.jpg",
+    "margin_pct": 57,
+    "delivery_days": 4
   },
   {
     "sku": "SOC-01-CR-OS",
@@ -360,7 +424,9 @@
     "size": "OS",
     "price": 16,
     "stock": 12,
-    "image": "SOC-01-CR-OS.jpg"
+    "image": "SOC-01-CR-OS.jpg",
+    "margin_pct": 78,
+    "delivery_days": 2
   },
   {
     "sku": "TEE-03-GR-S",
@@ -371,7 +437,9 @@
     "size": "S",
     "price": 36,
     "stock": 3,
-    "image": "TEE-03-GR-S.jpg"
+    "image": "TEE-03-GR-S.jpg",
+    "margin_pct": 69,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-03-GR-M",
@@ -382,7 +450,9 @@
     "size": "M",
     "price": 36,
     "stock": 3,
-    "image": "TEE-03-GR-M.jpg"
+    "image": "TEE-03-GR-M.jpg",
+    "margin_pct": 69,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-03-GR-L",
@@ -393,7 +463,9 @@
     "size": "L",
     "price": 36,
     "stock": 3,
-    "image": "TEE-03-GR-L.jpg"
+    "image": "TEE-03-GR-L.jpg",
+    "margin_pct": 69,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-03-GR-XL",
@@ -404,7 +476,9 @@
     "size": "XL",
     "price": 36,
     "stock": 3,
-    "image": "TEE-03-GR-XL.jpg"
+    "image": "TEE-03-GR-XL.jpg",
+    "margin_pct": 69,
+    "delivery_days": 3
   },
   {
     "sku": "PNT-03-GR-S",
@@ -415,7 +489,9 @@
     "size": "S",
     "price": 64,
     "stock": 3,
-    "image": "PNT-03-GR-S.jpg"
+    "image": "PNT-03-GR-S.jpg",
+    "margin_pct": 49,
+    "delivery_days": 8
   },
   {
     "sku": "PNT-03-GR-M",
@@ -426,7 +502,9 @@
     "size": "M",
     "price": 64,
     "stock": 3,
-    "image": "PNT-03-GR-M.jpg"
+    "image": "PNT-03-GR-M.jpg",
+    "margin_pct": 49,
+    "delivery_days": 8
   },
   {
     "sku": "PNT-03-GR-L",
@@ -437,7 +515,9 @@
     "size": "L",
     "price": 64,
     "stock": 3,
-    "image": "PNT-03-GR-L.jpg"
+    "image": "PNT-03-GR-L.jpg",
+    "margin_pct": 49,
+    "delivery_days": 8
   },
   {
     "sku": "PNT-03-GR-XL",
@@ -448,7 +528,9 @@
     "size": "XL",
     "price": 64,
     "stock": 3,
-    "image": "PNT-03-GR-XL.jpg"
+    "image": "PNT-03-GR-XL.jpg",
+    "margin_pct": 49,
+    "delivery_days": 8
   },
   {
     "sku": "SRT-02-OT-S",
@@ -459,7 +541,9 @@
     "size": "S",
     "price": 42,
     "stock": 3,
-    "image": "SRT-02-OT-S.jpg"
+    "image": "SRT-02-OT-S.jpg",
+    "margin_pct": 64,
+    "delivery_days": 2
   },
   {
     "sku": "SRT-02-OT-M",
@@ -470,7 +554,9 @@
     "size": "M",
     "price": 42,
     "stock": 3,
-    "image": "SRT-02-OT-M.jpg"
+    "image": "SRT-02-OT-M.jpg",
+    "margin_pct": 64,
+    "delivery_days": 2
   },
   {
     "sku": "SRT-02-OT-L",
@@ -481,7 +567,9 @@
     "size": "L",
     "price": 42,
     "stock": 3,
-    "image": "SRT-02-OT-L.jpg"
+    "image": "SRT-02-OT-L.jpg",
+    "margin_pct": 64,
+    "delivery_days": 2
   },
   {
     "sku": "SRT-02-OT-XL",
@@ -492,7 +580,9 @@
     "size": "XL",
     "price": 42,
     "stock": 3,
-    "image": "SRT-02-OT-XL.jpg"
+    "image": "SRT-02-OT-XL.jpg",
+    "margin_pct": 64,
+    "delivery_days": 2
   },
   {
     "sku": "JNS-01-IN-S",
@@ -503,7 +593,9 @@
     "size": "S",
     "price": 78,
     "stock": 3,
-    "image": "JNS-01-IN-S.jpg"
+    "image": "JNS-01-IN-S.jpg",
+    "margin_pct": 45,
+    "delivery_days": 9
   },
   {
     "sku": "JNS-01-IN-M",
@@ -514,7 +606,9 @@
     "size": "M",
     "price": 78,
     "stock": 3,
-    "image": "JNS-01-IN-M.jpg"
+    "image": "JNS-01-IN-M.jpg",
+    "margin_pct": 45,
+    "delivery_days": 9
   },
   {
     "sku": "JNS-01-IN-L",
@@ -525,7 +619,9 @@
     "size": "L",
     "price": 78,
     "stock": 3,
-    "image": "JNS-01-IN-L.jpg"
+    "image": "JNS-01-IN-L.jpg",
+    "margin_pct": 45,
+    "delivery_days": 9
   },
   {
     "sku": "JNS-01-IN-XL",
@@ -536,7 +632,9 @@
     "size": "XL",
     "price": 78,
     "stock": 3,
-    "image": "JNS-01-IN-XL.jpg"
+    "image": "JNS-01-IN-XL.jpg",
+    "margin_pct": 45,
+    "delivery_days": 9
   },
   {
     "sku": "SHT-01-WH-S",
@@ -547,7 +645,9 @@
     "size": "S",
     "price": 74,
     "stock": 3,
-    "image": "SHT-01-WH-S.jpg"
+    "image": "SHT-01-WH-S.jpg",
+    "margin_pct": 55,
+    "delivery_days": 6
   },
   {
     "sku": "SHT-01-WH-M",
@@ -558,7 +658,9 @@
     "size": "M",
     "price": 74,
     "stock": 3,
-    "image": "SHT-01-WH-M.jpg"
+    "image": "SHT-01-WH-M.jpg",
+    "margin_pct": 55,
+    "delivery_days": 6
   },
   {
     "sku": "SHT-01-WH-L",
@@ -569,7 +671,9 @@
     "size": "L",
     "price": 74,
     "stock": 3,
-    "image": "SHT-01-WH-L.jpg"
+    "image": "SHT-01-WH-L.jpg",
+    "margin_pct": 55,
+    "delivery_days": 6
   },
   {
     "sku": "SHT-01-WH-XL",
@@ -580,7 +684,9 @@
     "size": "XL",
     "price": 74,
     "stock": 3,
-    "image": "SHT-01-WH-XL.jpg"
+    "image": "SHT-01-WH-XL.jpg",
+    "margin_pct": 55,
+    "delivery_days": 6
   },
   {
     "sku": "JKT-01-NV-S",
@@ -591,7 +697,9 @@
     "size": "S",
     "price": 148,
     "stock": 1,
-    "image": "JKT-01-NV-S.jpg"
+    "image": "JKT-01-NV-S.jpg",
+    "margin_pct": 40,
+    "delivery_days": 10
   },
   {
     "sku": "JKT-01-NV-M",
@@ -602,7 +710,9 @@
     "size": "M",
     "price": 148,
     "stock": 2,
-    "image": "JKT-01-NV-M.jpg"
+    "image": "JKT-01-NV-M.jpg",
+    "margin_pct": 40,
+    "delivery_days": 10
   },
   {
     "sku": "JKT-01-NV-L",
@@ -613,7 +723,9 @@
     "size": "L",
     "price": 148,
     "stock": 2,
-    "image": "JKT-01-NV-L.jpg"
+    "image": "JKT-01-NV-L.jpg",
+    "margin_pct": 40,
+    "delivery_days": 10
   },
   {
     "sku": "JKT-01-NV-XL",
@@ -624,7 +736,9 @@
     "size": "XL",
     "price": 148,
     "stock": 1,
-    "image": "JKT-01-NV-XL.jpg"
+    "image": "JKT-01-NV-XL.jpg",
+    "margin_pct": 40,
+    "delivery_days": 10
   },
   {
     "sku": "JKT-02-IN-S",
@@ -635,7 +749,9 @@
     "size": "S",
     "price": 88,
     "stock": 2,
-    "image": "JKT-02-IN-S.jpg"
+    "image": "JKT-02-IN-S.jpg",
+    "margin_pct": 47,
+    "delivery_days": 8
   },
   {
     "sku": "JKT-02-IN-M",
@@ -646,7 +762,9 @@
     "size": "M",
     "price": 88,
     "stock": 2,
-    "image": "JKT-02-IN-M.jpg"
+    "image": "JKT-02-IN-M.jpg",
+    "margin_pct": 47,
+    "delivery_days": 8
   },
   {
     "sku": "JKT-02-IN-L",
@@ -657,7 +775,9 @@
     "size": "L",
     "price": 88,
     "stock": 2,
-    "image": "JKT-02-IN-L.jpg"
+    "image": "JKT-02-IN-L.jpg",
+    "margin_pct": 47,
+    "delivery_days": 8
   },
   {
     "sku": "JKT-02-IN-XL",
@@ -668,7 +788,9 @@
     "size": "XL",
     "price": 88,
     "stock": 2,
-    "image": "JKT-02-IN-XL.jpg"
+    "image": "JKT-02-IN-XL.jpg",
+    "margin_pct": 47,
+    "delivery_days": 8
   },
   {
     "sku": "HDY-03-NV-S",
@@ -679,7 +801,9 @@
     "size": "S",
     "price": 64,
     "stock": 3,
-    "image": "HDY-03-NV-S.jpg"
+    "image": "HDY-03-NV-S.jpg",
+    "margin_pct": 59,
+    "delivery_days": 2
   },
   {
     "sku": "HDY-03-NV-M",
@@ -690,7 +814,9 @@
     "size": "M",
     "price": 64,
     "stock": 3,
-    "image": "HDY-03-NV-M.jpg"
+    "image": "HDY-03-NV-M.jpg",
+    "margin_pct": 59,
+    "delivery_days": 2
   },
   {
     "sku": "HDY-03-NV-L",
@@ -701,7 +827,9 @@
     "size": "L",
     "price": 64,
     "stock": 3,
-    "image": "HDY-03-NV-L.jpg"
+    "image": "HDY-03-NV-L.jpg",
+    "margin_pct": 59,
+    "delivery_days": 2
   },
   {
     "sku": "HDY-03-NV-XL",
@@ -712,7 +840,9 @@
     "size": "XL",
     "price": 64,
     "stock": 3,
-    "image": "HDY-03-NV-XL.jpg"
+    "image": "HDY-03-NV-XL.jpg",
+    "margin_pct": 59,
+    "delivery_days": 2
   },
   {
     "sku": "HDY-04-GR-S",
@@ -723,7 +853,9 @@
     "size": "S",
     "price": 76,
     "stock": 3,
-    "image": "HDY-04-GR-S.jpg"
+    "image": "HDY-04-GR-S.jpg",
+    "margin_pct": 54,
+    "delivery_days": 6
   },
   {
     "sku": "HDY-04-GR-M",
@@ -734,7 +866,9 @@
     "size": "M",
     "price": 76,
     "stock": 3,
-    "image": "HDY-04-GR-M.jpg"
+    "image": "HDY-04-GR-M.jpg",
+    "margin_pct": 54,
+    "delivery_days": 6
   },
   {
     "sku": "HDY-04-GR-L",
@@ -745,7 +879,9 @@
     "size": "L",
     "price": 76,
     "stock": 3,
-    "image": "HDY-04-GR-L.jpg"
+    "image": "HDY-04-GR-L.jpg",
+    "margin_pct": 54,
+    "delivery_days": 6
   },
   {
     "sku": "HDY-04-GR-XL",
@@ -756,7 +892,9 @@
     "size": "XL",
     "price": 76,
     "stock": 3,
-    "image": "HDY-04-GR-XL.jpg"
+    "image": "HDY-04-GR-XL.jpg",
+    "margin_pct": 54,
+    "delivery_days": 6
   },
   {
     "sku": "HDY-05-BU-S",
@@ -767,7 +905,9 @@
     "size": "S",
     "price": 66,
     "stock": 3,
-    "image": "HDY-05-BU-S.jpg"
+    "image": "HDY-05-BU-S.jpg",
+    "margin_pct": 61,
+    "delivery_days": 5
   },
   {
     "sku": "HDY-05-BU-M",
@@ -778,7 +918,9 @@
     "size": "M",
     "price": 66,
     "stock": 3,
-    "image": "HDY-05-BU-M.jpg"
+    "image": "HDY-05-BU-M.jpg",
+    "margin_pct": 61,
+    "delivery_days": 5
   },
   {
     "sku": "HDY-05-BU-L",
@@ -789,7 +931,9 @@
     "size": "L",
     "price": 66,
     "stock": 3,
-    "image": "HDY-05-BU-L.jpg"
+    "image": "HDY-05-BU-L.jpg",
+    "margin_pct": 61,
+    "delivery_days": 5
   },
   {
     "sku": "HDY-05-BU-XL",
@@ -800,7 +944,9 @@
     "size": "XL",
     "price": 66,
     "stock": 3,
-    "image": "HDY-05-BU-XL.jpg"
+    "image": "HDY-05-BU-XL.jpg",
+    "margin_pct": 61,
+    "delivery_days": 5
   },
   {
     "sku": "SWE-02-GN-S",
@@ -811,7 +957,9 @@
     "size": "S",
     "price": 58,
     "stock": 3,
-    "image": "SWE-02-GN-S.jpg"
+    "image": "SWE-02-GN-S.jpg",
+    "margin_pct": 63,
+    "delivery_days": 4
   },
   {
     "sku": "SWE-02-GN-M",
@@ -822,7 +970,9 @@
     "size": "M",
     "price": 58,
     "stock": 3,
-    "image": "SWE-02-GN-M.jpg"
+    "image": "SWE-02-GN-M.jpg",
+    "margin_pct": 63,
+    "delivery_days": 4
   },
   {
     "sku": "SWE-02-GN-L",
@@ -833,7 +983,9 @@
     "size": "L",
     "price": 58,
     "stock": 3,
-    "image": "SWE-02-GN-L.jpg"
+    "image": "SWE-02-GN-L.jpg",
+    "margin_pct": 63,
+    "delivery_days": 4
   },
   {
     "sku": "SWE-02-GN-XL",
@@ -844,7 +996,9 @@
     "size": "XL",
     "price": 58,
     "stock": 3,
-    "image": "SWE-02-GN-XL.jpg"
+    "image": "SWE-02-GN-XL.jpg",
+    "margin_pct": 63,
+    "delivery_days": 4
   },
   {
     "sku": "SWE-03-SD-S",
@@ -855,7 +1009,9 @@
     "size": "S",
     "price": 54,
     "stock": 3,
-    "image": "SWE-03-SD-S.jpg"
+    "image": "SWE-03-SD-S.jpg",
+    "margin_pct": 65,
+    "delivery_days": 3
   },
   {
     "sku": "SWE-03-SD-M",
@@ -866,7 +1022,9 @@
     "size": "M",
     "price": 54,
     "stock": 3,
-    "image": "SWE-03-SD-M.jpg"
+    "image": "SWE-03-SD-M.jpg",
+    "margin_pct": 65,
+    "delivery_days": 3
   },
   {
     "sku": "SWE-03-SD-L",
@@ -877,7 +1035,9 @@
     "size": "L",
     "price": 54,
     "stock": 3,
-    "image": "SWE-03-SD-L.jpg"
+    "image": "SWE-03-SD-L.jpg",
+    "margin_pct": 65,
+    "delivery_days": 3
   },
   {
     "sku": "SWE-03-SD-XL",
@@ -888,7 +1048,9 @@
     "size": "XL",
     "price": 54,
     "stock": 3,
-    "image": "SWE-03-SD-XL.jpg"
+    "image": "SWE-03-SD-XL.jpg",
+    "margin_pct": 65,
+    "delivery_days": 3
   },
   {
     "sku": "PNT-04-BK-S",
@@ -899,7 +1061,9 @@
     "size": "S",
     "price": 52,
     "stock": 3,
-    "image": "PNT-04-BK-S.jpg"
+    "image": "PNT-04-BK-S.jpg",
+    "margin_pct": 60,
+    "delivery_days": 2
   },
   {
     "sku": "PNT-04-BK-M",
@@ -910,7 +1074,9 @@
     "size": "M",
     "price": 52,
     "stock": 3,
-    "image": "PNT-04-BK-M.jpg"
+    "image": "PNT-04-BK-M.jpg",
+    "margin_pct": 60,
+    "delivery_days": 2
   },
   {
     "sku": "PNT-04-BK-L",
@@ -921,7 +1087,9 @@
     "size": "L",
     "price": 52,
     "stock": 3,
-    "image": "PNT-04-BK-L.jpg"
+    "image": "PNT-04-BK-L.jpg",
+    "margin_pct": 60,
+    "delivery_days": 2
   },
   {
     "sku": "PNT-04-BK-XL",
@@ -932,7 +1100,9 @@
     "size": "XL",
     "price": 52,
     "stock": 3,
-    "image": "PNT-04-BK-XL.jpg"
+    "image": "PNT-04-BK-XL.jpg",
+    "margin_pct": 60,
+    "delivery_days": 2
   },
   {
     "sku": "TEE-04-BG-S",
@@ -943,7 +1113,9 @@
     "size": "S",
     "price": 28,
     "stock": 3,
-    "image": "TEE-04-BG-S.jpg"
+    "image": "TEE-04-BG-S.jpg",
+    "margin_pct": 74,
+    "delivery_days": 4
   },
   {
     "sku": "TEE-04-BG-M",
@@ -954,7 +1126,9 @@
     "size": "M",
     "price": 28,
     "stock": 3,
-    "image": "TEE-04-BG-M.jpg"
+    "image": "TEE-04-BG-M.jpg",
+    "margin_pct": 74,
+    "delivery_days": 4
   },
   {
     "sku": "TEE-04-BG-L",
@@ -965,7 +1139,9 @@
     "size": "L",
     "price": 28,
     "stock": 3,
-    "image": "TEE-04-BG-L.jpg"
+    "image": "TEE-04-BG-L.jpg",
+    "margin_pct": 74,
+    "delivery_days": 4
   },
   {
     "sku": "TEE-04-BG-XL",
@@ -976,7 +1152,9 @@
     "size": "XL",
     "price": 28,
     "stock": 3,
-    "image": "TEE-04-BG-XL.jpg"
+    "image": "TEE-04-BG-XL.jpg",
+    "margin_pct": 74,
+    "delivery_days": 4
   },
   {
     "sku": "TEE-05-BK-S",
@@ -987,7 +1165,9 @@
     "size": "S",
     "price": 34,
     "stock": 3,
-    "image": "TEE-05-BK-S.jpg"
+    "image": "TEE-05-BK-S.jpg",
+    "margin_pct": 58,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-05-BK-M",
@@ -998,7 +1178,9 @@
     "size": "M",
     "price": 34,
     "stock": 3,
-    "image": "TEE-05-BK-M.jpg"
+    "image": "TEE-05-BK-M.jpg",
+    "margin_pct": 58,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-05-BK-L",
@@ -1009,7 +1191,9 @@
     "size": "L",
     "price": 34,
     "stock": 3,
-    "image": "TEE-05-BK-L.jpg"
+    "image": "TEE-05-BK-L.jpg",
+    "margin_pct": 58,
+    "delivery_days": 3
   },
   {
     "sku": "TEE-05-BK-XL",
@@ -1020,7 +1204,9 @@
     "size": "XL",
     "price": 34,
     "stock": 3,
-    "image": "TEE-05-BK-XL.jpg"
+    "image": "TEE-05-BK-XL.jpg",
+    "margin_pct": 58,
+    "delivery_days": 3
   },
   {
     "sku": "SRT-03-BL-S",
@@ -1031,7 +1217,9 @@
     "size": "S",
     "price": 40,
     "stock": 3,
-    "image": "SRT-03-BL-S.jpg"
+    "image": "SRT-03-BL-S.jpg",
+    "margin_pct": 56,
+    "delivery_days": 5
   },
   {
     "sku": "SRT-03-BL-M",
@@ -1042,7 +1230,9 @@
     "size": "M",
     "price": 40,
     "stock": 3,
-    "image": "SRT-03-BL-M.jpg"
+    "image": "SRT-03-BL-M.jpg",
+    "margin_pct": 56,
+    "delivery_days": 5
   },
   {
     "sku": "SRT-03-BL-L",
@@ -1053,7 +1243,9 @@
     "size": "L",
     "price": 40,
     "stock": 3,
-    "image": "SRT-03-BL-L.jpg"
+    "image": "SRT-03-BL-L.jpg",
+    "margin_pct": 56,
+    "delivery_days": 5
   },
   {
     "sku": "SRT-03-BL-XL",
@@ -1064,7 +1256,9 @@
     "size": "XL",
     "price": 40,
     "stock": 3,
-    "image": "SRT-03-BL-XL.jpg"
+    "image": "SRT-03-BL-XL.jpg",
+    "margin_pct": 56,
+    "delivery_days": 5
   },
   {
     "sku": "POL-01-NV-S",
@@ -1075,7 +1269,9 @@
     "size": "S",
     "price": 48,
     "stock": 3,
-    "image": "POL-01-NV-S.jpg"
+    "image": "POL-01-NV-S.jpg",
+    "margin_pct": 62,
+    "delivery_days": 4
   },
   {
     "sku": "POL-01-NV-M",
@@ -1086,7 +1282,9 @@
     "size": "M",
     "price": 48,
     "stock": 3,
-    "image": "POL-01-NV-M.jpg"
+    "image": "POL-01-NV-M.jpg",
+    "margin_pct": 62,
+    "delivery_days": 4
   },
   {
     "sku": "POL-01-NV-L",
@@ -1097,7 +1295,9 @@
     "size": "L",
     "price": 48,
     "stock": 3,
-    "image": "POL-01-NV-L.jpg"
+    "image": "POL-01-NV-L.jpg",
+    "margin_pct": 62,
+    "delivery_days": 4
   },
   {
     "sku": "POL-01-NV-XL",
@@ -1108,7 +1308,9 @@
     "size": "XL",
     "price": 48,
     "stock": 3,
-    "image": "POL-01-NV-XL.jpg"
+    "image": "POL-01-NV-XL.jpg",
+    "margin_pct": 62,
+    "delivery_days": 4
   },
   {
     "sku": "SHT-02-BL-S",
@@ -1119,7 +1321,9 @@
     "size": "S",
     "price": 72,
     "stock": 3,
-    "image": "SHT-02-BL-S.jpg"
+    "image": "SHT-02-BL-S.jpg",
+    "margin_pct": 51,
+    "delivery_days": 7
   },
   {
     "sku": "SHT-02-BL-M",
@@ -1130,7 +1334,9 @@
     "size": "M",
     "price": 72,
     "stock": 3,
-    "image": "SHT-02-BL-M.jpg"
+    "image": "SHT-02-BL-M.jpg",
+    "margin_pct": 51,
+    "delivery_days": 7
   },
   {
     "sku": "SHT-02-BL-L",
@@ -1141,7 +1347,9 @@
     "size": "L",
     "price": 72,
     "stock": 3,
-    "image": "SHT-02-BL-L.jpg"
+    "image": "SHT-02-BL-L.jpg",
+    "margin_pct": 51,
+    "delivery_days": 7
   },
   {
     "sku": "SHT-02-BL-XL",
@@ -1152,7 +1360,9 @@
     "size": "XL",
     "price": 72,
     "stock": 3,
-    "image": "SHT-02-BL-XL.jpg"
+    "image": "SHT-02-BL-XL.jpg",
+    "margin_pct": 51,
+    "delivery_days": 7
   },
   {
     "sku": "PNT-05-TN-S",
@@ -1163,7 +1373,9 @@
     "size": "S",
     "price": 64,
     "stock": 3,
-    "image": "PNT-05-TN-S.jpg"
+    "image": "PNT-05-TN-S.jpg",
+    "margin_pct": 53,
+    "delivery_days": 5
   },
   {
     "sku": "PNT-05-TN-M",
@@ -1174,7 +1386,9 @@
     "size": "M",
     "price": 64,
     "stock": 3,
-    "image": "PNT-05-TN-M.jpg"
+    "image": "PNT-05-TN-M.jpg",
+    "margin_pct": 53,
+    "delivery_days": 5
   },
   {
     "sku": "PNT-05-TN-L",
@@ -1185,7 +1399,9 @@
     "size": "L",
     "price": 64,
     "stock": 3,
-    "image": "PNT-05-TN-L.jpg"
+    "image": "PNT-05-TN-L.jpg",
+    "margin_pct": 53,
+    "delivery_days": 5
   },
   {
     "sku": "PNT-05-TN-XL",
@@ -1196,7 +1412,9 @@
     "size": "XL",
     "price": 64,
     "stock": 3,
-    "image": "PNT-05-TN-XL.jpg"
+    "image": "PNT-05-TN-XL.jpg",
+    "margin_pct": 53,
+    "delivery_days": 5
   },
   {
     "sku": "JKT-03-BK-S",
@@ -1207,7 +1425,9 @@
     "size": "S",
     "price": 96,
     "stock": 2,
-    "image": "JKT-03-BK-S.jpg"
+    "image": "JKT-03-BK-S.jpg",
+    "margin_pct": 44,
+    "delivery_days": 9
   },
   {
     "sku": "JKT-03-BK-M",
@@ -1218,7 +1438,9 @@
     "size": "M",
     "price": 96,
     "stock": 3,
-    "image": "JKT-03-BK-M.jpg"
+    "image": "JKT-03-BK-M.jpg",
+    "margin_pct": 44,
+    "delivery_days": 9
   },
   {
     "sku": "JKT-03-BK-L",
@@ -1229,7 +1451,9 @@
     "size": "L",
     "price": 96,
     "stock": 3,
-    "image": "JKT-03-BK-L.jpg"
+    "image": "JKT-03-BK-L.jpg",
+    "margin_pct": 44,
+    "delivery_days": 9
   },
   {
     "sku": "JKT-03-BK-XL",
@@ -1240,7 +1464,9 @@
     "size": "XL",
     "price": 96,
     "stock": 2,
-    "image": "JKT-03-BK-XL.jpg"
+    "image": "JKT-03-BK-XL.jpg",
+    "margin_pct": 44,
+    "delivery_days": 9
   },
   {
     "sku": "JKT-04-OL-S",
@@ -1251,7 +1477,9 @@
     "size": "S",
     "price": 82,
     "stock": 2,
-    "image": "JKT-04-OL-S.jpg"
+    "image": "JKT-04-OL-S.jpg",
+    "margin_pct": 50,
+    "delivery_days": 6
   },
   {
     "sku": "JKT-04-OL-M",
@@ -1262,7 +1490,9 @@
     "size": "M",
     "price": 82,
     "stock": 3,
-    "image": "JKT-04-OL-M.jpg"
+    "image": "JKT-04-OL-M.jpg",
+    "margin_pct": 50,
+    "delivery_days": 6
   },
   {
     "sku": "JKT-04-OL-L",
@@ -1273,7 +1503,9 @@
     "size": "L",
     "price": 82,
     "stock": 3,
-    "image": "JKT-04-OL-L.jpg"
+    "image": "JKT-04-OL-L.jpg",
+    "margin_pct": 50,
+    "delivery_days": 6
   },
   {
     "sku": "JKT-04-OL-XL",
@@ -1284,7 +1516,9 @@
     "size": "XL",
     "price": 82,
     "stock": 2,
-    "image": "JKT-04-OL-XL.jpg"
+    "image": "JKT-04-OL-XL.jpg",
+    "margin_pct": 50,
+    "delivery_days": 6
   },
   {
     "sku": "SNK-01-WH-8",
@@ -1295,7 +1529,9 @@
     "size": "8",
     "price": 90,
     "stock": 2,
-    "image": "SNK-01-WH-8.jpg"
+    "image": "SNK-01-WH-8.jpg",
+    "margin_pct": 38,
+    "delivery_days": 7
   },
   {
     "sku": "SNK-01-WH-9",
@@ -1306,7 +1542,9 @@
     "size": "9",
     "price": 90,
     "stock": 2,
-    "image": "SNK-01-WH-9.jpg"
+    "image": "SNK-01-WH-9.jpg",
+    "margin_pct": 38,
+    "delivery_days": 7
   },
   {
     "sku": "SNK-01-WH-10",
@@ -1317,7 +1555,9 @@
     "size": "10",
     "price": 90,
     "stock": 3,
-    "image": "SNK-01-WH-10.jpg"
+    "image": "SNK-01-WH-10.jpg",
+    "margin_pct": 38,
+    "delivery_days": 7
   },
   {
     "sku": "SNK-01-WH-11",
@@ -1328,7 +1568,9 @@
     "size": "11",
     "price": 90,
     "stock": 2,
-    "image": "SNK-01-WH-11.jpg"
+    "image": "SNK-01-WH-11.jpg",
+    "margin_pct": 38,
+    "delivery_days": 7
   },
   {
     "sku": "SNK-01-WH-12",
@@ -1339,7 +1581,9 @@
     "size": "12",
     "price": 90,
     "stock": 2,
-    "image": "SNK-01-WH-12.jpg"
+    "image": "SNK-01-WH-12.jpg",
+    "margin_pct": 38,
+    "delivery_days": 7
   },
   {
     "sku": "CAP-01-BK-OS",
@@ -1350,6 +1594,8 @@
     "size": "OS",
     "price": 22,
     "stock": 12,
-    "image": "CAP-01-BK-OS.jpg"
+    "image": "CAP-01-BK-OS.jpg",
+    "margin_pct": 76,
+    "delivery_days": 3
   }
 ]

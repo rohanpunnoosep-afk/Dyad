@@ -39,7 +39,7 @@ def test_create_stream_snapshot_and_replay(client):
     snap = client.get(f"/api/negotiations/{nid}").json()
     assert snap["negotiation"]["status"] == "done"
     assert [r["round"] for r in snap["rounds"]] == [1]
-    assert len(snap["rounds"][0]["bundles"]) == 5
+    assert len(snap["rounds"][0]["bundles"]) == 20
     assert all(b["judgment"] for b in snap["rounds"][0]["bundles"])
     assert snap["rounds"][0]["analysis"]["main_issue"] == "style"
     assert snap["final_offer"]["skus"]

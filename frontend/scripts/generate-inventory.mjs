@@ -40,6 +40,42 @@ const seeds = [
   ['p32','CAP-01-BK','Classic baseball cap','cap','Black','Cotton twill',22,'Adjustable',['Casual','Athletic','Streetwear'],'black-cap','accessory',{ OS: 12 },'Accessories'],
 ];
 
+// Seller economics per product: [gross margin %, average standard delivery days].
+const economics = {
+  p01: [62, 3],
+  p02: [58, 4],
+  p03: [72, 2],
+  p04: [60, 5],
+  p05: [66, 3],
+  p06: [70, 6],
+  p07: [52, 7],
+  p08: [57, 4],
+  p09: [78, 2],
+  p10: [69, 3],
+  p11: [49, 8],
+  p12: [64, 2],
+  p13: [45, 9],
+  p14: [55, 6],
+  p15: [40, 10],
+  p16: [47, 8],
+  p17: [59, 2],
+  p18: [54, 6],
+  p19: [61, 5],
+  p20: [63, 4],
+  p21: [65, 3],
+  p22: [60, 2],
+  p23: [74, 4],
+  p24: [58, 3],
+  p25: [56, 5],
+  p26: [62, 4],
+  p27: [51, 7],
+  p28: [53, 5],
+  p29: [44, 9],
+  p30: [50, 6],
+  p31: [38, 7],
+  p32: [76, 3],
+};
+
 const inventory = [];
 const metadata = {};
 for (const [id, prefix, name, category, color, material, price, fit, styles, asset, group, sizeStock, displayCategory] of seeds) {
@@ -47,7 +83,8 @@ for (const [id, prefix, name, category, color, material, price, fit, styles, ass
   for (const [size, stock] of Object.entries(sizeStock)) {
     const sku = `${prefix}-${size}`;
     const image = `${sku}.jpg`;
-    inventory.push({ sku, name, category, color, material, size, price, stock, image });
+    const [margin_pct, delivery_days] = economics[id];
+    inventory.push({ sku, name, category, color, material, size, price, stock, image, margin_pct, delivery_days });
     skus.push(sku);
     await copyFile(path.join(frontend,'public/images',`${asset}.jpg`), path.join(frontend,'public/images',image));
   }

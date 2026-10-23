@@ -1,6 +1,7 @@
 import inventoryData from './data/inventory.json' with {type:'json'};
 import productMetaData from './data/product-meta.json' with {type:'json'};
 import type {InventoryItem,WireBundle} from './contracts';
+import type {Quote,ReturnWindow} from './pricing';
 
 export const inventory:InventoryItem[]=inventoryData;
 export type ProductMeta={skus:string[];fit:string;styles:string[];gender:string;group:'top'|'bottom'|'accessory';displayCategory:string;sourceAsset:string};
@@ -35,7 +36,9 @@ export const looks = [
  {id:'l6',name:'Everyday layers',desc:'Classic shapes · casual texture',image:'trouser',tags:['Classic','Regular','Layered']},
 ];
 
-export type Profile={styles:string[];looks:string[];location:string;occasions:string;budget:number;topSize:string;bottomSize:string;fit:string};
-export const defaultProfile:Profile={styles:[],looks:[],location:'Los Angeles',occasions:'Working from home, coffee runs, and relaxed weekends',budget:200,topSize:'M',bottomSize:'M',fit:'Relaxed'};
+/** `deliveryDays`: wants the clothes within this many days. `returnWindow`: how long the return guarantee should run. */
+export type Profile={styles:string[];looks:string[];location:string;occasions:string;budget:number;topSize:string;bottomSize:string;fit:string;notes:string;neededBy:string;deliveryDays:number;returnsNote:string;returnWindow:ReturnWindow};
+export const defaultProfile:Profile={styles:[],looks:[],location:'Los Angeles',occasions:'Working from home, coffee runs, and relaxed weekends',budget:200,topSize:'M',bottomSize:'M',fit:'Relaxed',notes:'',neededBy:'',deliveryDays:7,returnsNote:'',returnWindow:'2 months'};
 export type Rules={maxItems:number;maxDiscount:number};
-export type Bundle=WireBundle & {name:string;subtitle:string;scores:{price:number;fit:number;style:number};probability:number;reason:string;tradeoff:string;issue:'none'|'value'|'fit'|'style'|'coverage'};
+export type Issue='none'|'value'|'fit'|'style'|'delivery'|'returns';
+export type Bundle=WireBundle & {name:string;subtitle:string;quote:Quote;scores:{price:number;fit:number;style:number;delivery:number;returns:number};probability:number;reason:string;tradeoff:string;issue:Issue};

@@ -1,8 +1,8 @@
-# Tandem frontend
+# Dyad frontend
 
-TANDEM is a happy-path menswear marketplace demo with separate buyer and seller workspaces. The buyer selects Casual and Athletic, saves three lounge-inspired looks, and answers a short context chat. The seller reviews prepopulated inventory and sets item and discount limits.
+Dyad is a happy-path menswear marketplace demo with separate buyer and seller workspaces. The buyer selects Casual and Athletic, saves three lounge-inspired looks, and answers a short context chat. The seller reviews prepopulated inventory and sets item and discount limits.
 
-The simulated exchange follows the repository's [JSON contract](../json_formats.md): buyer context → five seller bundles → buyer ratings → seller analysis → one final offer → buyer decision. The five initial bundles provide different combinations, prices, fabrics, and style directions for the seller to learn from. They are not five checkout choices. The final offer aims for approximately $150 and must respect the buyer's budget and sizes.
+The simulated exchange follows the repository's [JSON contract](../json_formats.md): buyer context → twenty seller bundles → buyer ratings → seller analysis → one final offer → buyer decision. The twenty initial bundles provide different combinations, prices, shipping speeds, return guarantees, and style directions for the seller to learn from. They are not twenty checkout choices. The final offer is priced by the seller's pricing policy (src/pricing.ts) and must respect the buyer's budget and sizes.
 
 ## Run
 

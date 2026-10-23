@@ -8,10 +8,11 @@ from middleman.heat import compute_item_heat
 from models.schemas import (
     AnalysisDraft,
     Bundle,
-    BundleSet,
+    BundleProposal,
     ItemCheckDraft,
     ItemStyle,
     Judgment,
+    ProposalSet,
     SignalDraft,
 )
 from tests.conftest import BRIEF, COLD_ITEM, HOT_ITEM, ROUND_BUNDLES, STYLES, FakeAgents, draft
@@ -36,7 +37,7 @@ def test_propose_prompt_has_only_eligible_items_and_hard_requirements(items, mon
 
     async def fake_structured(system, user, model, effort=None):
         seen["system"], seen["user"] = system, user
-        return BundleSet(bundles=[])
+        return ProposalSet(bundles=[])
 
     monkeypatch.setattr(seller, "structured", fake_structured)
     asyncio.run(seller.propose_bundles(BRIEF, items, 5, errors=["bundle 1: no jacket"]))
@@ -45,7 +46,8 @@ def test_propose_prompt_has_only_eligible_items_and_hard_requirements(items, mon
     assert "must include a jacket" in seen["user"] and "at most 400" in seen["user"]
     assert "bundle 1: no jacket" in seen["user"]
     assert '"image"' not in seen["user"]
-    assert "notes" in seen["system"]
+    assert '"margin_pct"' in seen["user"] and '"delivery_days"' in seen["user"]
+    assert "notes" in seen["system"] and "PRICING POLICY" in seen["system"]
 
 
 def _round(items):
@@ -126,7 +128,7 @@ def test_final_prompt_excludes_dropped_skus(items, monkeypatch):
 
     async def fake_structured(system, user, model, effort=None):
         seen["user"] = user
-        return BundleSet(bundles=[])
+        return ProposalSet(bundles=[])
 
     monkeypatch.setattr(seller, "structured", fake_structured)
     asyncio.run(seller.final_bundle(BRIEF, items, keyed, judgments, result, None))
@@ -134,3 +136,17 @@ def test_final_prompt_excludes_dropped_skus(items, monkeypatch):
     assert HOT_ITEM in offered and not offered & set(result.drop_skus)
     assert "<rated_bundles>" in seen["user"] and '"main_issue": "style"' in seen["user"]
     assert "Propose exactly 1 bundle" in seen["user"]
+
+
+def test_seller_prices_proposals_with_the_pricing_policy(items):
+    brief = BRIEF.model_copy(update={"delivery_days": 3})
+    proposal = BundleProposal(name="x", skus=[HOT_ITEM, "TEE-01-OL-M"], shipping="express",
+                              return_window="2 months", refund_pct=75, pitch="p")
+    [priced] = seller.price_proposals(brief, [proposal], items)
+    inv = {i.sku: i for i in items}
+    # 89 + 35 = 124; margin (89*52 + 35*72) / 124 = 57.6 -> 8.8% off; express +6, rush +3, 2 months/75% +6
+    assert priced.price == round(124 * (1 + (6 + 3 + 6 - 8.8) / 100))
+    assert priced.delivery_days == 2 and priced.shipping == "express" and priced.refund_pct == 75
+    assert inv[HOT_ITEM].delivery_days == 4
+    [unknown] = seller.price_proposals(brief, [proposal.model_copy(update={"skus": ["NOPE", HOT_ITEM]})], items)
+    assert unknown.price == 0

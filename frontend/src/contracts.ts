@@ -1,13 +1,20 @@
 /** Wire formats from the repository's json_formats.md. Dollars, not cents. */
+import {quote,SHIPPING_TIERS,WINDOWS,REFUND_PCTS,type Shipping,type ReturnWindow,type RefundPct} from './pricing.ts';
+
+/** `margin_pct` and `delivery_days` are seller economics; margin is never shown to the buyer. */
 export type InventoryItem = {
  sku:string; name:string; category:string; color:string; material:string;
- size:string; price:number; stock:number; image:string;
+ size:string; price:number; stock:number; image:string; margin_pct:number; delivery_days:number;
 };
 export type BuyerContext = {
  style:string[]; colors_liked:string[]; colors_avoid:string[];
  sizes:{top:string; bottom:string; shoe?:string}; budget:number; occasion:string; notes:string[];
+ additional_notes:string|null; needed_by:string|null; delivery_days:number|null;
+ returns_note:string|null; return_window:ReturnWindow|null;
 };
-export type WireBundle = {id:string; skus:string[]; images:string[]; items_total:number; price:number};
+export const INITIAL_BUNDLES=20;
+export type WireBundle = {id:string; skus:string[]; images:string[]; items_total:number; price:number;
+ shipping:Shipping; delivery_days:number; return_window:ReturnWindow; refund_pct:RefundPct};
 export type BundlePayload = {bundles:WireBundle[]};
 export type Rating = {id:string; probability:number; reason:string};
 export type RatingsPayload = {ratings:Rating[]};
@@ -74,12 +81,14 @@ function commonErrors(context:BuyerContext,inventory:InventoryItem[],maxItems:nu
  return errors;
 }
 
-function checkBundle(value:unknown,context:BuyerContext,inventory:InventoryItem[],maxItems:number,maxDiscount?:number):string[] {
+function checkBundle(value:unknown,context:BuyerContext,inventory:InventoryItem[],maxItems:number,maxDiscount=25):string[] {
  if (!object(value)) return ['bundle must be an object'];
  const errors:string[]=[];
  const id=text(value.id)?value.id:'bundle';
  if (!text(value.id)) errors.push('id is required');
  if (!strings(value.skus)||!strings(value.images)||!number(value.items_total)||!number(value.price)) return [`${id}: invalid bundle schema (skus, images, items_total, price)`];
+ if (!SHIPPING_TIERS.includes(value.shipping as Shipping)||!WINDOWS.includes(value.return_window as ReturnWindow)||!REFUND_PCTS.includes(value.refund_pct as RefundPct)||!number(value.delivery_days)) return [`${id}: invalid terms (shipping, delivery_days, return_window, refund_pct)`];
+ const terms={shipping:value.shipping as Shipping,window:value.return_window as ReturnWindow,refund:value.refund_pct as RefundPct};
  const images=value.images;
  if (value.skus.length<2||value.skus.length>Math.min(5,maxItems)) errors.push(`must contain 2–${Math.min(5,maxItems)} items`);
  if (new Set(value.skus).size!==value.skus.length) errors.push('repeated SKU');
@@ -104,9 +113,13 @@ function checkBundle(value:unknown,context:BuyerContext,inventory:InventoryItem[
  });
  const computedTotal=items.reduce((sum,item)=>sum+item.price,0);
  if (!close(value.items_total,computedTotal)) errors.push(`items_total must equal computed inventory total ${computedTotal}`);
- if (value.price<computedTotal*.6-1e-8||value.price>computedTotal*1.05+1e-8) errors.push('price must be 60–105% of the computed item total');
+ if (items.length===value.skus.length) {
+  // The seller's pricing policy caps the margin-based discount at the seller's maximum.
+  const q=quote(items,terms.shipping,terms.window,terms.refund,context.delivery_days,maxDiscount);
+  if (!close(value.price,q.price)) errors.push(`price ${value.price} must equal the pricing policy quote ${q.price}`);
+  if (value.delivery_days!==q.delivery_days) errors.push(`delivery_days must be ${q.delivery_days} for ${terms.shipping} shipping`);
+ }
  if (value.price>context.budget+1e-8) errors.push(`price exceeds buyer budget ${context.budget}`);
- if (maxDiscount!==undefined && value.price<computedTotal*(1-maxDiscount/100)-1e-8) errors.push(`discount exceeds seller maximum ${maxDiscount}%`);
  errors.push(...noteErrors(context.notes,items));
  return errors.map(error=>`${id}: ${error}`);
 }
@@ -115,14 +128,15 @@ export function validateBundlePayload(payload:unknown,context:BuyerContext,inven
  const errors=commonErrors(context,inventory,maxItems,maxDiscount);
  if (!object(payload)||!Array.isArray(payload.bundles)) errors.push('payload must contain a bundles array');
  else {
-  if (payload.bundles.length!==5) errors.push('exactly five initial bundles are required');
+  if (payload.bundles.length!==INITIAL_BUNDLES) errors.push(`exactly ${INITIAL_BUNDLES} initial bundles are required`);
   const ids=new Set<string>(); const combinations=new Set<string>();
   for (const bundle of payload.bundles) {
    errors.push(...checkBundle(bundle,context,inventory,maxItems,maxDiscount));
    if (object(bundle)&&text(bundle.id)) {if(ids.has(bundle.id))errors.push(`duplicate bundle id ${bundle.id}`);ids.add(bundle.id);}
    if (object(bundle)&&strings(bundle.skus)) {
-    const combination=[...bundle.skus].sort().join('|');
-    if (combinations.has(combination)) errors.push('initial bundles must have different SKU combinations');
+    // The same pieces may be offered again on different shipping or return terms.
+    const combination=[...bundle.skus].sort().join('|')+`|${bundle.shipping}|${bundle.return_window}|${bundle.refund_pct}`;
+    if (combinations.has(combination)) errors.push('initial bundles must differ in pieces or terms');
     combinations.add(combination);
    }
   }

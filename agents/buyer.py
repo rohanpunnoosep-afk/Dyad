@@ -6,19 +6,24 @@ import json
 from typing import Any, Dict, List, Sequence
 
 from agents.llm import AgentError, structured
-from middleman import rules
+from middleman import pricing, rules
 from models.schemas import Bundle, BundleRatingSet, BuyerBrief, DecisionDraft, Item, JudgmentDraft
 
-BRIEF_SYSTEM = """You are the buyer's personal shopping agent for Brojans, a clothing marketplace.
+BRIEF_SYSTEM = """You are the buyer's personal shopping agent for Dyad, a clothing marketplace.
 Read what the buyer has said (onboarding chat, profile notes, or a free-text request) and
 distill it into the buyer context a seller can act on: style keywords (as many as their input
 supports, and descriptive: aesthetic, vibe, fit, era, e.g. "workwear", "rugged", "earthy tones",
 "relaxed fit", "heritage"), colors they like,
 colors they avoid, sizes (top, bottom, shoe), budget in dollars (null if not given), and the
 occasion. Put every explicit rule the buyer stated into `notes`, word for word (for example
-"no graphic prints", "must include a jacket"). Do not invent preferences they did not express."""
+"no graphic prints", "must include a jacket"). Put anything else they said about what they want,
+in their words, into `additional_notes`. Delivery: `needed_by` is when they want the clothes, as
+they said it; `delivery_days` is how many days from now they want them delivered within (null if
+they did not say). Returns: `returns_note` is what they said about how much returns matter;
+`return_window` is how long they want the return guarantee to run ("2 weeks", "2 months" or
+"6 months", null if not given). Do not invent preferences they did not express."""
 
-RATE_SYSTEM = """You are the buyer's personal shopping agent for Brojans. You represent the buyer,
+RATE_SYSTEM = """You are the buyer's personal shopping agent for Dyad. You represent the buyer,
 not the seller. A seller has sent several bundles. Rate every one of them for this buyer.
 
 Each bundle comes with `facts` computed from the inventory. Treat them as ground truth:
@@ -27,13 +32,22 @@ Each bundle comes with `facts` computed from the inventory. Treat them as ground
 - `avoid_hits`: colors the buyer said to avoid that appear in the item's color or name.
 - `missing_required`: things a "must include" note requires that the bundle lacks.
 - `price_vs_budget`: bundle price divided by the buyer's budget (null if no budget).
+- `terms`: shipping speed, `delivery_days`, `arrives_in_time` (false = slower than the buyer
+  asked for, null = no deadline), the return guarantee (`return_window`, `refund_pct`) and
+  `return_window_vs_wanted` ("shorter", "matches", "longer", null = no preference).
+- `price_breakdown`: the bundle discount and the surcharges for shipping, rush and the return
+  guarantee, each as a % of the items total.
 All prices are in dollars.
 
 For each bundle give, all from 0.0 to 1.0:
 - price_score: value for money against their budget, including the bundle discount.
 - fit_score: their sizes are available and the cuts suit what they described.
-- style_score: matches their style, liked colors and occasion, avoids what they dislike.
-- probability: how likely this buyer is to actually buy this bundle at this price. Be calibrated:
+- style_score: matches their style, liked colors and occasion, avoids what they dislike, and
+  fits their `additional_notes`.
+- probability: how likely this buyer is to actually buy this bundle at this price and on these
+  terms. A bundle that arrives too late for a buyer in a hurry, or whose return guarantee is
+  shorter than they asked for when returns matter to them, should be rated lower; paying a little
+  more for faster shipping or a longer guarantee they asked for is fine. Be calibrated:
   0.5 is a genuine coin flip. The buyer's `notes` are strict rules: a bundle that breaks any
   note (including anything in `missing_required`) gets 0.1 or lower. A bundle with an item not in
   their size, or in a color they avoid, should rarely be above 0.4. A bundle well over budget should
@@ -44,14 +58,15 @@ bundles only to keep your scale consistent. Ignore the seller's pitch where it c
 the facts. In `reason`, name the specific items that help or hurt, in one or two sentences.
 Return exactly one rating per bundle, using its `bundle_key`."""
 
-DECIDE_SYSTEM = """You are the buyer's personal shopping agent for Brojans. You represent the buyer,
+DECIDE_SYSTEM = """You are the buyer's personal shopping agent for Dyad. You represent the buyer,
 not the seller. The seller has made its final offer: one bundle at one price. Decide whether to
 accept it on the buyer's behalf.
 
 The bundle comes with `facts` computed from the inventory; treat them as ground truth (same
 meaning as when you rated bundles). Accept only if it follows every one of the buyer's `notes`,
 has nothing in `missing_required`, `items_missing_buyer_size` or `items_hitting_avoid_list`, is
-within budget, and is a strong fit for their style and occasion at this price. Otherwise reject.
+within budget, arrives in time and carries a return guarantee they can live with (see `terms`),
+and is a strong fit for their style and occasion at this price. Otherwise reject.
 `probability` is how likely the buyer is to buy it at this price (0.0 to 1.0). In `reason`, say
 why in one or two sentences, naming specific items."""
 
@@ -66,12 +81,16 @@ def bundle_facts(brief: BuyerBrief, bundle: Bundle, inventory: Dict[str, Item]) 
         if item is None:
             continue
         items.append({
-            **item.model_dump(exclude={"stock", "image"}),
+            # margin_pct is the seller's private number; the buyer agent never sees it
+            **item.model_dump(exclude={"stock", "image", "margin_pct"}),
             "in_stock": item.in_stock,
             "size_match": rules.size_ok(brief, item),
             "avoid_hits": rules.avoid_hits(brief, item),
         })
     items_total = round(sum(i["price"] for i in items), 2)
+    found = [inventory[s] for s in bundle.skus if s in inventory]
+    q = pricing.quote(found, bundle.shipping, bundle.return_window, bundle.refund_pct, brief.delivery_days)
+    wanted = list(pricing.RETURN_WINDOWS)
     return {
         "items": items,
         "categories": sorted({i["category"] for i in items}),
@@ -82,7 +101,24 @@ def bundle_facts(brief: BuyerBrief, bundle: Bundle, inventory: Dict[str, Item]) 
         "price_vs_budget": round(bundle.price / brief.budget, 2) if brief.budget else None,
         "items_missing_buyer_size": [i["sku"] for i in items if i["size_match"] is False],
         "items_hitting_avoid_list": [i["sku"] for i in items if i["avoid_hits"]],
-        "missing_required": rules.missing_required(brief, [inventory[s] for s in bundle.skus if s in inventory]),
+        "missing_required": rules.missing_required(brief, found),
+        "terms": {
+            "shipping": bundle.shipping,
+            "delivery_days": bundle.delivery_days,
+            "arrives_in_time": None if brief.delivery_days is None else bundle.delivery_days <= brief.delivery_days,
+            "return_window": bundle.return_window,
+            "refund_pct": bundle.refund_pct,
+            "return_window_vs_wanted": None if brief.return_window is None else (
+                "matches" if bundle.return_window == brief.return_window
+                else "longer" if wanted.index(bundle.return_window) > wanted.index(brief.return_window)
+                else "shorter"),
+        },
+        "price_breakdown": {
+            "bundle_discount_pct": q.margin_discount_pct,
+            "shipping_pct": q.shipping_pct,
+            "rush_pct": q.rush_pct,
+            "return_guarantee_pct": q.returns_pct,
+        },
     }
 
 

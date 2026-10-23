@@ -63,7 +63,8 @@ def attribute_averages(
     """For each attribute value, the mean probability of the bundles that contain it.
 
     Same rule as item heat: a value counts once per bundle, however many items carry it.
-    `styles` (SKU -> style label from the seller's analyst) adds a "style" dimension.
+    `styles` (SKU -> style label from the seller's analyst) adds a "style" dimension. The bundle's
+    terms add "shipping", "return_window" and "refund" dimensions.
     """
     prob = {j.bundle_id: j.probability for j in judgments}
     dims = ITEM_ATTRIBUTES + (("style",) if styles else ())
@@ -79,6 +80,8 @@ def attribute_averages(
                 values = {norm(getattr(i, d)) for i in items}
             for v in values:
                 probs[d][v].append(prob[b.id])
+        for d, v in (("shipping", b.shipping), ("return_window", b.return_window), ("refund", f"{b.refund_pct}%")):
+            probs.setdefault(d, defaultdict(list))[v].append(prob[b.id])
     return {
         d: dict(sorted(((v, _mean(ps)) for v, ps in by_value.items()), key=lambda kv: -kv[1]))
         for d, by_value in probs.items()

@@ -299,7 +299,8 @@ class PostgresRepo(Repo):
 
     async def list_items(self):
         conn = await self._c()
-        rows = await (await conn.execute("select sku, name, category, color, material, size, price, stock, image from items order by sku")).fetchall()
+        rows = await (await conn.execute("select sku, name, category, color, material, size, price, stock, image, margin_pct, delivery_days "
+            "from items order by sku")).fetchall()
         return [Item.model_validate(r) for r in rows]
 
     async def list_bundles(self, negotiation_id, round=None):
@@ -310,7 +311,9 @@ class PostgresRepo(Repo):
             (negotiation_id, round, round),
         )).fetchall()
         return [Bundle(id=str(r["id"]), negotiation_id=str(r["negotiation_id"]), round=r["round"], name=r["name"],
-                       skus=list(r["skus"]), price=r["price"], pitch=r["pitch"])
+                       skus=list(r["skus"]), price=r["price"], pitch=r["pitch"], shipping=r["shipping"],
+                       delivery_days=r["delivery_days"], return_window=r["return_window"],
+                       refund_pct=r["refund_pct"])
                 for r in rows]
 
     async def list_judgments(self, negotiation_id, round=None):
@@ -366,9 +369,11 @@ class PostgresRepo(Repo):
             async with conn.cursor() as c:
                 if bundles:
                     await c.executemany(
-                        """insert into bundles (id, negotiation_id, round, name, skus, price, pitch)
-                           values (%s, %s, %s, %s, %s, %s, %s)""",
-                        [(b.id, b.negotiation_id, b.round, b.name, b.skus, b.price, b.pitch)
+                        """insert into bundles (id, negotiation_id, round, name, skus, price, pitch,
+                                                shipping, delivery_days, return_window, refund_pct)
+                           values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        [(b.id, b.negotiation_id, b.round, b.name, b.skus, b.price, b.pitch,
+                          b.shipping, b.delivery_days, b.return_window, b.refund_pct)
                          for b in bundles],
                     )
                 if judgments:

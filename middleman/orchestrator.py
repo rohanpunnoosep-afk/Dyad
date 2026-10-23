@@ -1,4 +1,4 @@
-"""The middle man: drives buyer agent <-> seller agent through one round of 5 bundles.
+"""The middle man: drives buyer agent <-> seller agent through one round of 20 bundles.
 
 BRIEF -> PROPOSE -> JUDGE -> ANALYZE -> FINAL -> DECIDE -> DONE
 
@@ -38,7 +38,7 @@ from models.schemas import (
 log = logging.getLogger("brojans.middleman")
 
 LEASE_SECONDS = 180
-BUNDLES_PER_ROUND = 5
+BUNDLES_PER_ROUND = 20
 ROUND = 1
 FINAL_ROUND = 2
 MAX_ATTEMPTS = 2  # first try + one re-prompt carrying the validation errors
@@ -88,6 +88,10 @@ def bundle_view(bundle: Bundle, inventory: Mapping[str, Item]) -> Dict[str, Any]
         "images": [i.image for i in items],
         "items_total": rules.items_total(items),
         "price": bundle.price,
+        "shipping": bundle.shipping,
+        "delivery_days": bundle.delivery_days,
+        "return_window": bundle.return_window,
+        "refund_pct": bundle.refund_pct,
         "pitch": bundle.pitch,
     }
 

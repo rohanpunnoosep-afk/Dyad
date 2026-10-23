@@ -94,3 +94,10 @@
 .exchange-message>summary:hover{background:var(--paper)}
 .exchange-index{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--sage-bg);color:var(--sage);font-size:11px;font-weight:600}
 .exchange-message pre{margin:0;padding:14px 19px 18px 49px;max-height:340px;overflow:auto;background:var(--paper);font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:pre}
+/* Delivery, returns and notes inputs; bundle terms; seller economics */
+.detail-group{border:1px solid #e9e5d8;border-radius:4px;padding:15px;margin:0 0 17px;display:grid;grid-template-columns:1fr 1fr;gap:15px 17px}.detail-group legend{display:flex;align-items:center;gap:6px;padding:0 6px;font-size:9px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#857d6d}.detail-group label,.notes-field{font-size:9px;color:#958a73;display:flex;flex-direction:column;gap:8px}.detail-group input:not([type=range]),.detail-group select,.notes-field textarea{width:100%;background:#fbfaf4;border:1px solid #e3dfd0;border-radius:4px;color:#685f4e;padding:11px;font-size:11px}.detail-group input[type=range]{accent-color:#657561;width:100%}.detail-group small{font-size:8px;color:#aaa38e}.range-value{font-weight:500;color:#657561}.notes-field{margin-bottom:22px}.notes-field textarea{resize:vertical;min-height:70px;line-height:1.5}.notes-field .muted{font-size:8px}
+.deal-terms{display:flex;flex-wrap:wrap;gap:8px 16px;margin:14px 0}.deal-terms>span{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#7d7766;background:#f3f2ec;border:1px solid #e7e4da;border-radius:4px;padding:6px 9px}.deal-terms svg{color:#657561}
+.seller-econ{font-size:10px;color:#657561;margin:4px 0 10px}
+.econ-row{display:flex;flex-wrap:wrap;gap:6px 12px;margin:6px 0 8px;font-size:10px;color:#7d7766}.econ-row span{display:inline-flex;align-items:center;gap:4px}.econ-row b{font-weight:600;color:#657561}
+.mini-product small{display:block;font-size:7px;color:#8a947a;margin-top:4px}
+@media(max-width:600px){.detail-group{grid-template-columns:1fr}}

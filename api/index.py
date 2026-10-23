@@ -1,4 +1,4 @@
-"""Brojans middle man API (FastAPI on Vercel's Python runtime)."""
+"""Dyad middle man API (FastAPI on Vercel's Python runtime)."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from middleman.events import stream_negotiation  # noqa: E402
 from middleman.orchestrator import FINAL_ROUND  # noqa: E402
 from models.schemas import BuyerBrief, Status  # noqa: E402
 
-app = FastAPI(title="Brojans middle man")
+app = FastAPI(title="Dyad middle man")
 app.state.make_repo = make_repo
 app.state.agents = None  # None = real OpenAI-backed agents; tests inject fakes
 

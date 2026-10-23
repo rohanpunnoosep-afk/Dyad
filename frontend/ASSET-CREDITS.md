@@ -1,4 +1,4 @@
-# TANDEM image credits
+# Dyad image credits
 
 The clothing and outfit photographs are illustrative assets for this frontend demo, sourced from Unsplash and retailer image servers. The catalog names, material/fit tags, stock, prices, discounts, and bundle recommendations are fictional demo data; they do not represent the photographed retailers' current inventory or offers.
 

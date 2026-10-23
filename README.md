@@ -3,12 +3,16 @@ Troylabs
 
 ## Middle man backend (FastAPI on Vercel)
 
-Runs buyer agent ↔ seller agent through one round of 5 bundles:
+Runs buyer agent ↔ seller agent through one round of 20 bundles:
 `BRIEF → PROPOSE → JUDGE → ANALYZE → FINAL → DECIDE → DONE`. All message shapes are in
 [json_formats.md](json_formats.md); prices are dollars, items are SKUs.
 
-1. **PROPOSE**: the seller builds 5 bundles from eligible inventory (in stock, buyer's sizes, no avoided colors).
-2. **JUDGE**: the buyer rates all 5 (probability + price/fit/style scores). Each SKU gets a heat score: the
+1. **PROPOSE**: the seller builds 20 bundles from eligible inventory (in stock, buyer's sizes, no avoided colors).
+   Each bundle has pieces plus terms: shipping speed (standard / express / priority) and a return guarantee
+   (2 weeks / 2 months / 6 months at 30% / 75% / 100% back). Prices come from the seller's pricing policy
+   (`middleman/pricing.py`): more aggregate gross margin means a bigger discount; faster shipping, a buyer in a
+   hurry, and longer or more generous guarantees cost more.
+2. **JUDGE**: the buyer rates all 20 (probability + price/fit/style scores). Each SKU gets a heat score: the
    mean probability of the bundles containing it (hot ≥ 0.6, cold ≤ 0.3).
 3. **ANALYZE**: the seller checks every item of every bundle rated below 0.5. The middle man computes the
    mean probability per category/color/material/size/style and marks a failing attribute `confirmed` only
@@ -17,7 +21,7 @@ Runs buyer agent ↔ seller agent through one round of 5 bundles:
 5. **DECIDE**: the buyer accepts or rejects the final offer.
 
 Every seller output is validated (SKUs, stock, sizes, avoided colors, "must include" notes, budget,
-price band) and re-prompted once with the errors.
+price and delivery days match the pricing policy) and re-prompted once with the errors.
 
 | Endpoint | |
 |---|---|
@@ -30,7 +34,8 @@ SSE event types: `brief`, `check`, `bundles_proposed`, `ratings`, `heat`, `analy
 
 ### Setup
 1. Vercel → Storage → add **Neon Postgres** (sets `DATABASE_URL`, use the pooled URL) and add `OPENAI_API_KEY` (see *API keys* below).
-2. `DATABASE_URL=... python scripts/setup_db.py` (applies `db/schema.sql`, seeds `db/seed_items.json`). If the
+2. `DATABASE_URL=... python scripts/setup_db.py` (applies `db/schema.sql`, seeds `db/seed_items.json`; re-run it on
+   an existing database to add the margin, delivery and bundle-terms columns). If the
    database still has the old cents/tags tables, the script stops and says which tables to drop.
 3. `vercel deploy`.
 

@@ -49,6 +49,8 @@ class Item(BaseModel):
     price: float
     stock: int = Field(ge=0)
     image: str
+    margin_pct: float = 50.0  # gross margin % of the price. Seller-only: never shown to the buyer agent
+    delivery_days: int = 5    # average days to deliver this item with standard shipping
 
     @property
     def in_stock(self) -> bool:
@@ -65,6 +67,11 @@ class Sizes(BaseModel):
     shoe: Optional[str] = None
 
 
+Shipping = Literal["standard", "express", "priority"]
+ReturnWindow = Literal["2 weeks", "2 months", "6 months"]
+RefundPct = Literal[30, 75, 100]
+
+
 class BuyerBrief(BaseModel):
     """The buyer context (json_formats.md section 2). `notes` are strict rules."""
 
@@ -75,6 +82,26 @@ class BuyerBrief(BaseModel):
     budget: Optional[float] = None
     occasion: Optional[str] = None
     notes: List[str]
+    additional_notes: Optional[str] = None   # the buyer's own words about what they want (soft)
+    needed_by: Optional[str] = None          # when they want the clothes, as they said it
+    delivery_days: Optional[int] = None      # wants delivery within this many days
+    returns_note: Optional[str] = None       # how much being able to return matters to them
+    return_window: Optional[ReturnWindow] = None  # how long they want the return guarantee to run
+
+
+class BundleProposal(BaseModel):
+    """What the seller's model proposes. The price comes from middleman/pricing.py."""
+
+    name: str
+    skus: List[str]
+    shipping: Shipping
+    return_window: ReturnWindow
+    refund_pct: RefundPct
+    pitch: str
+
+
+class ProposalSet(BaseModel):
+    bundles: List[BundleProposal]
 
 
 class BundleDraft(BaseModel):
@@ -82,10 +109,10 @@ class BundleDraft(BaseModel):
     skus: List[str]
     price: float
     pitch: str
-
-
-class BundleSet(BaseModel):
-    bundles: List[BundleDraft]
+    shipping: Shipping = "standard"
+    delivery_days: int = 0
+    return_window: ReturnWindow = "2 weeks"
+    refund_pct: RefundPct = 30
 
 
 class JudgmentDraft(BaseModel):

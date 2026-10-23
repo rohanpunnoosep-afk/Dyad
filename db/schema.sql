@@ -22,6 +22,8 @@ create table if not exists items (
     stock        integer not null default 0 check (stock >= 0),
     image        text not null
 );
+alter table items add column if not exists margin_pct numeric(5, 2) not null default 50;  -- gross margin %
+alter table items add column if not exists delivery_days integer not null default 5;      -- avg standard delivery
 
 create table if not exists negotiations (
     id           uuid primary key,
@@ -39,13 +41,17 @@ create table if not exists negotiations (
 create table if not exists bundles (
     id              uuid primary key,
     negotiation_id  uuid not null references negotiations(id) on delete cascade,
-    round           integer not null,                -- 1 = the 5 bundles, 2 = final bundle
+    round           integer not null,                -- 1 = the 20 bundles, 2 = final bundle
     name            text not null,
     skus            text[] not null,
     price           numeric(10, 2) not null,
     pitch           text not null,
     created_at      timestamptz not null default now()
 );
+alter table bundles add column if not exists shipping text not null default 'standard';  -- standard | express | priority
+alter table bundles add column if not exists delivery_days integer not null default 0;
+alter table bundles add column if not exists return_window text not null default '2 weeks';  -- 2 weeks | 2 months | 6 months
+alter table bundles add column if not exists refund_pct integer not null default 30;         -- 30 | 75 | 100
 create index if not exists bundles_negotiation_round on bundles (negotiation_id, round);
 
 create table if not exists judgments (

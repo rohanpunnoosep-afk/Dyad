@@ -67,3 +67,16 @@ def test_rate_bundles_reprompts_on_missing_ratings_then_gives_up(items, monkeypa
         asyncio.run(buyer.rate_bundles(BRIEF, bundles, inv))
     assert len(prompts) == buyer.MAX_RATE_ATTEMPTS
     assert "missing ratings for ['B2']" in prompts[1] and "B9" in prompts[1]
+
+
+def test_bundle_facts_hide_margin_and_describe_terms(items):
+    inv = {i.sku: i for i in items}
+    brief = BRIEF.model_copy(update={"delivery_days": 3, "return_window": "2 months"})
+    b = _bundle("b", ["JKT-01-BR-M", "TEE-01-OL-M"], 120).model_copy(
+        update={"shipping": "express", "delivery_days": 2, "return_window": "6 months", "refund_pct": 100})
+    facts = buyer.bundle_facts(brief, b, inv)
+    assert all("margin_pct" not in i for i in facts["items"])
+    assert facts["items"][0]["delivery_days"] == 4
+    assert facts["terms"] == {"shipping": "express", "delivery_days": 2, "arrives_in_time": True,
+                              "return_window": "6 months", "refund_pct": 100, "return_window_vs_wanted": "longer"}
+    assert facts["price_breakdown"]["return_guarantee_pct"] == 14 and facts["price_breakdown"]["rush_pct"] == 3

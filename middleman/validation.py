@@ -4,12 +4,9 @@ from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional
 
-from middleman import rules
+from middleman import pricing, rules
 from models.schemas import BuyerBrief, BundleDraft, Item
 
-# Bundle price must land within this band of the sum of its item prices.
-MIN_PRICE_RATIO = 0.6
-MAX_PRICE_RATIO = 1.05
 MIN_ITEMS = 2
 MAX_ITEMS = 5
 
@@ -31,7 +28,7 @@ def validate_bundles(
     """Raise ValidationFailed listing every problem with a seller's bundle set.
 
     With a brief, the buyer's hard rules (sizes, colors_avoid, budget, "must include" notes)
-    are enforced too.
+    are enforced too. Prices must match the seller's pricing policy (middleman/pricing.py).
     """
     errors: List[str] = []
     banned = set(banned_skus or ())
@@ -48,9 +45,10 @@ def validate_bundles(
                 continue
         if len(set(d.skus)) != len(d.skus):
             errors.append(f"{label}: repeats a SKU")
-        key = frozenset(d.skus)
+        # The same pieces may be offered again with different shipping or return terms.
+        key = (frozenset(d.skus), d.shipping, d.return_window, d.refund_pct)
         if key in seen:
-            errors.append(f"{label}: same items as bundle {seen[key] + 1}")
+            errors.append(f"{label}: same items and terms as bundle {seen[key] + 1}")
         seen.setdefault(key, i)
         unknown = [x for x in d.skus if x not in inventory]
         if unknown:
@@ -63,10 +61,12 @@ def validate_bundles(
         used_banned = [x for x in d.skus if x in banned]
         if used_banned:
             errors.append(f"{label}: includes SKUs the buyer rejected {used_banned}")
-        total = rules.items_total(items)
-        lo, hi = round(total * MIN_PRICE_RATIO, 2), round(total * MAX_PRICE_RATIO, 2)
-        if not (lo <= d.price <= hi):
-            errors.append(f"{label}: price {d.price} outside allowed range {lo}-{hi} (items total {total})")
+        q = pricing.quote(items, d.shipping, d.return_window, d.refund_pct,
+                          brief.delivery_days if brief else None)
+        if abs(d.price - q.price) > 0.005:
+            errors.append(f"{label}: price {d.price} does not match the pricing policy quote {q.price}")
+        if d.delivery_days != q.delivery_days:
+            errors.append(f"{label}: delivery_days {d.delivery_days} should be {q.delivery_days} for {d.shipping}")
         if brief is None:
             continue
         wrong_size = [i.sku for i in items if rules.size_ok(brief, i) is False]

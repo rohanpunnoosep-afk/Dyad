@@ -10,35 +10,63 @@ import json
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from agents.llm import structured
-from middleman import rules
-from middleman.validation import MAX_ITEMS, MAX_PRICE_RATIO, MIN_ITEMS, MIN_PRICE_RATIO
+from middleman import pricing, rules
+from middleman.validation import MAX_ITEMS, MIN_ITEMS
 from models.schemas import (
     AnalysisDraft,
     Bundle,
     BundleDraft,
-    BundleSet,
+    BundleProposal,
     BuyerBrief,
     Item,
     ItemHeat,
     Judgment,
+    ProposalSet,
     RoundAnalysis,
 )
 
-SYSTEM = f"""You are the seller's merchandising agent for Brojans, a clothing marketplace.
-You build clothing bundles from the seller's inventory for one specific buyer and price them.
+
+def _pct(x: float) -> str:
+    return f"{x:g}%"
+
+
+_RETURN_TABLE = "\n".join(
+    f"    {w}: " + ", ".join(f"{r}% back = +{_pct(pricing.returns_premium(w, r))}" for r in pricing.REFUND_PCTS)
+    for w in pricing.RETURN_WINDOWS
+)
+
+SYSTEM = f"""You are the seller's merchandising agent for Dyad, a clothing marketplace.
+You build clothing bundles from the seller's inventory for one specific buyer. Each bundle is a
+set of pieces plus the terms they come with: a shipping speed and a return guarantee.
 
 STRICT RULES (the middle man rejects any bundle that breaks one):
 - Use only SKUs from the inventory you are given. Every one is in stock, in the buyer's sizes and
   free of colors they avoid, so do not reach for anything else.
 - Follow every one of the buyer's `notes` exactly. They are the buyer's own rules.
 - {MIN_ITEMS}-{MAX_ITEMS} items per bundle, never the same SKU twice in a bundle.
-- Price in dollars, between {int(MIN_PRICE_RATIO * 100)}% and {int(MAX_PRICE_RATIO * 100)}% of the sum
-  of the bundle's item prices, and never above the buyer's budget. A modest bundle discount helps
-  conversion; do not give away margin unnecessarily.
+- The bundle price must not be above the buyer's budget.
 
-`pitch` is one or two sentences to the buyer about that bundle."""
+PRICING POLICY. You do not set prices; code computes them from the pieces and terms you choose:
+  price = items total x (1 - margin discount + shipping + rush + return guarantee)
+- Margin discount: each inventory row has `margin_pct` (gross margin) and `delivery_days`
+  (average days to deliver with standard shipping). The discount is (aggregate margin - {pricing.MARGIN_FLOOR_PCT:g})
+  x {pricing.MARGIN_DISCOUNT_SHARE:g}, capped at {_pct(pricing.MAX_MARGIN_DISCOUNT_PCT)}, where aggregate margin is the price-weighted
+  margin of the pieces. More high-margin pieces = a bigger discount for the buyer. `margin_pct`
+  is confidential: never mention it in a name or pitch.
+- Shipping: "standard" (+0%) arrives in the slowest piece's delivery_days; "express"
+  (+{_pct(pricing.SHIPPING['express'])}) in half that (at least 2 days); "priority" (+{_pct(pricing.SHIPPING['priority'])}) in a quarter (at least 1 day).
+- Rush: a buyer who wants delivery within {pricing.RUSH[0][0]} days pays +{_pct(pricing.RUSH[0][1])}, within {pricing.RUSH[1][0]} days +{_pct(pricing.RUSH[1][1])}.
+- Return guarantee: the longer the window and the more money back, the more it costs:
+{_RETURN_TABLE}
 
-ANALYST_SYSTEM = """You are the seller's analyst for Brojans. The buyer's agent has rated the bundles
+When the buyer wants their clothes fast (`delivery_days`, `needed_by`), prefer pieces with low
+delivery_days and the cheapest shipping speed that still arrives in time. Weigh how much the
+buyer cares about returns (`returns_note`, `return_window`) when choosing guarantees. Take the
+buyer's `additional_notes` seriously as preferences.
+
+`pitch` is one or two sentences to the buyer about that bundle and its terms."""
+
+ANALYST_SYSTEM = """You are the seller's analyst for Dyad. The buyer's agent has rated the bundles
 you sent. Work out what works and what doesn't so the final offer sells.
 
 You get the buyer context (its `style` keywords describe what they want), each bundle with its
@@ -68,6 +96,23 @@ def _item_row(item: Item) -> Dict[str, Any]:
     return item.model_dump(exclude={"image"})
 
 
+def price_proposals(
+    brief: BuyerBrief, proposals: Sequence[BundleProposal], inventory: Sequence[Item]
+) -> List[BundleDraft]:
+    """Apply the pricing policy. Unknown SKUs leave the price at 0 for validation to reject."""
+    by_sku = {i.sku: i for i in inventory}
+    out = []
+    for p in proposals:
+        items = [by_sku[s] for s in p.skus if s in by_sku]
+        price, days = 0.0, 0
+        if items and len(items) == len(p.skus):
+            q = pricing.quote(items, p.shipping, p.return_window, p.refund_pct, brief.delivery_days)
+            price, days = q.price, q.delivery_days
+        out.append(BundleDraft(name=p.name, skus=p.skus, price=price, pitch=p.pitch, shipping=p.shipping,
+                               delivery_days=days, return_window=p.return_window, refund_pct=p.refund_pct))
+    return out
+
+
 def _context_block(brief: BuyerBrief) -> str:
     return f"<buyer_context>\n{brief.model_dump_json(indent=2)}\n</buyer_context>"
 
@@ -82,6 +127,9 @@ def _requirements(brief: BuyerBrief) -> str:
         lines.append(f"- Every bundle must include a {thing} (buyer note).")
     if brief.budget is not None:
         lines.append(f"- Every bundle price must be at most {brief.budget}.")
+    if brief.delivery_days is not None:
+        lines.append(f"- The buyer wants delivery within {brief.delivery_days} days; choose pieces and shipping "
+                     "that arrive in time.")
     return ("\n\nHard requirements for this buyer:\n" + "\n".join(lines)) if lines else ""
 
 
@@ -106,6 +154,10 @@ def _rated_bundles(
             "items": [_item_row(i) for i in items],
             "items_total": rules.items_total(items),
             "price": b.price,
+            "shipping": b.shipping,
+            "delivery_days": b.delivery_days,
+            "return_window": b.return_window,
+            "refund_pct": b.refund_pct,
             "rating": None if j is None else {
                 "probability": j.probability,
                 "price_score": j.price_score,
@@ -123,10 +175,14 @@ async def propose_bundles(
     user = (
         f"{_context_block(brief)}\n\n{_inventory_block(eligible_inventory(brief, inventory))}\n\n"
         f"Propose exactly {count} bundles for this buyer. Make them clearly different from each other "
-        "(style, colors, categories, price point) so the buyer's ratings tell us what works."
+        "(style, colors, categories, price point, shipping speed and return guarantee) so the buyer's "
+        "ratings tell us what works. Across the set, use every return window (2 weeks, 2 months, 6 months) "
+        "and every refund level (30%, 75%, 100%). The same pieces may appear more than once with "
+        "different terms, but no two bundles may have the same pieces and terms."
         f"{_requirements(brief)}{_retry_block(errors)}"
     )
-    return (await structured(SYSTEM, user, BundleSet)).bundles
+    proposals = (await structured(SYSTEM, user, ProposalSet)).bundles
+    return price_proposals(brief, proposals, inventory)
 
 
 async def analyze_round(
@@ -167,8 +223,10 @@ async def final_bundle(
         f"<analysis>\n{analysis.model_dump_json(indent=1, exclude={'item_checks'})}\n</analysis>\n\n"
         "This is the final offer. Propose exactly 1 bundle: the one most likely to sell. Start from the "
         "highest-rated bundle, build around keep_skus and what works, fix the main issue, and never use "
-        "drop_skus. Choose the price most likely to close without giving away margin. In `pitch`, say "
-        "why this bundle, citing the ratings."
+        "drop_skus. Choose the shipping speed and return guarantee most likely to close, using how the "
+        "buyer rated the terms; favor high-margin pieces where they fit so the bundle discount is larger. "
+        "In `pitch`, say why this bundle and these terms, citing the ratings."
         f"{_requirements(brief)}{_retry_block(errors)}"
     )
-    return (await structured(SYSTEM, user, BundleSet)).bundles
+    proposals = (await structured(SYSTEM, user, ProposalSet)).bundles
+    return price_proposals(brief, proposals, inventory)

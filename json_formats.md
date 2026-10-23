@@ -1,15 +1,15 @@
-# Brojans JSON formats
+# Dyad JSON formats
 
 Every message between the buyer agent, the middle man and the seller agent is JSON.
 The agents never talk directly: every message passes through the middle man, which
 parses it, validates it, stores it and forwards it to the next stage.
 
-**Negotiation: single round, 5 bundles** (`BRIEF → PROPOSE → JUDGE → ANALYZE → FINAL → DECIDE → DONE`)
+**Negotiation: single round, 20 bundles** (`BRIEF → PROPOSE → JUDGE → ANALYZE → FINAL → DECIDE → DONE`)
 
 ```
 1. inventory          (seller's catalog)                 db/seed_items.json, models.schemas.Item
 2. context            buyer  -> seller   SSE `brief`      models.schemas.BuyerBrief
-3. bundles (5)        seller -> buyer    SSE `bundles_proposed`
+3. bundles (20)       seller -> buyer    SSE `bundles_proposed`
 4. check              middle man         SSE `check`
 5. ratings            buyer  -> seller   SSE `ratings` (+ `heat`)
 6. analysis           seller             SSE `analysis`   models.schemas.RoundAnalysis
@@ -37,7 +37,9 @@ One JSON per SKU. Each size is its own SKU. Products have no images, only an ima
   "size": "M",
   "price": 89,
   "stock": 8,
-  "image": "JKT-01-BR-M.jpg"
+  "image": "JKT-01-BR-M.jpg",
+  "margin_pct": 52,
+  "delivery_days": 4
 }
 ```
 
@@ -52,6 +54,10 @@ One JSON per SKU. Each size is its own SKU. Products have no images, only an ima
 | `price` | number | Dollars |
 | `stock` | int | Units available. `0` = out of stock, never offered |
 | `image` | string | Image file name, always passed along with the item |
+| `margin_pct` | number | Gross margin % of the price. **Seller-only**: never shown to the buyer agent |
+| `delivery_days` | int | Average days to deliver this item with standard shipping |
+
+(The example inventory below omits `margin_pct` / `delivery_days`; see `db/seed_items.json`.)
 
 Example inventory used in the examples below:
 
@@ -87,7 +93,12 @@ user's images, only this context.
   "sizes": { "top": "M", "bottom": "32", "shoe": "10" },
   "budget": 400,
   "occasion": "weekend casual",
-  "notes": ["no graphic prints", "no skinny fits", "must include a jacket"]
+  "notes": ["no graphic prints", "no skinny fits", "must include a jacket"],
+  "additional_notes": "I run cold, so warmer layers please",
+  "needed_by": "before my trip on the 14th",
+  "delivery_days": 5,
+  "returns_note": "important, I'm between sizes",
+  "return_window": "2 months"
 }
 ```
 
@@ -100,12 +111,33 @@ user's images, only this context.
 | `budget` | number | Dollars. **Hard rule**: bundle price must be at or under this |
 | `occasion` | string | What it's for |
 | `notes` | string[] | **Strictly followed.** The user's explicit rules, word for word. "must include a X" notes are enforced in code (bundle rejected); other notes go to both agents as strict rules, and the buyer rates a bundle that breaks one at 0.1 or lower |
+| `additional_notes` | string \| null | The buyer's own words about what they want. Soft preferences, not rules |
+| `needed_by` | string \| null | When they want the clothes, as they said it |
+| `delivery_days` | int \| null | Wants delivery within this many days. Drives the rush premium and the seller's choice of fast pieces |
+| `returns_note` | string \| null | How much being able to return matters to them |
+| `return_window` | `"2 weeks"` \| `"2 months"` \| `"6 months"` \| null | How long they want the return guarantee to run |
 
 ---
 
 ## 3. Bundles (seller -> buyer)
 
-Exactly 5 bundles, each 2-5 items, all different from each other so the ratings are informative.
+Exactly 20 bundles, each 2-5 items, all different from each other (pieces or terms) so the ratings are
+informative. Every bundle also carries its terms: a shipping speed and a return guarantee. The same
+pieces may be offered more than once on different terms.
+
+**Pricing policy** (`middleman/pricing.py`, mirrored in `frontend/src/pricing.ts`). The seller's model
+picks pieces and terms; code computes the price:
+
+```
+price = items_total x (1 - margin discount + shipping + rush + return guarantee)
+```
+
+| Component | Rule |
+|---|---|
+| Margin discount | (aggregate gross margin - 40) / 2 %, capped at 25% (the frontend uses the seller's max discount). Aggregate margin is price-weighted. More margin, more discount |
+| Shipping | `standard` +0%, arrives in the slowest piece's `delivery_days`; `express` +6%, half that (min 2); `priority` +12%, a quarter (min 1) |
+| Rush | buyer `delivery_days` <= 2: +6%; <= 5: +3% |
+| Return guarantee | window rate x refund share. Rates: 2 weeks 4%, 2 months 8%, 6 months 14%; refunds 30% / 75% / 100%. Longer and more money back cost more |
 
 The `bundles_proposed` event. Ids are UUIDs in practice; `b1`... is shorthand here.
 
@@ -129,7 +161,11 @@ The `bundles_proposed` event. Ids are UUIDs in practice; `b1`... is shorthand he
 | `skus` | string[] | Items in the bundle (no repeats) |
 | `images` | string[] | Image file names, same order as `skus` |
 | `items_total` | number | Sum of item prices. **Computed by code** |
-| `price` | number | Bundle price in dollars. Must be 60-105% of `items_total` and at or under `budget` |
+| `price` | number | Bundle price in dollars. **Computed by code** from the pricing policy; must be at or under `budget` |
+| `shipping` | `standard` \| `express` \| `priority` | Shipping speed |
+| `delivery_days` | int | Days until delivery at that speed. **Computed by code** |
+| `return_window` | `2 weeks` \| `2 months` \| `6 months` | Return guarantee period |
+| `refund_pct` | `30` \| `75` \| `100` | Share of the price refunded on a return |
 | `pitch` | string | Seller's one-line pitch (also sent, omitted above) |
 
 The buyer agent receives the full item JSONs for each SKU when rating.
@@ -161,7 +197,8 @@ with an `error` event. A rejected attempt's errors look like:
 
 Checks: valid JSON/schema, bundle count, 2-5 items, SKUs exist, in stock, sizes match `sizes`
 (or one size `OS`), no `colors_avoid`, "must include" notes, no repeated SKU, no two identical
-bundles, price range, budget, and (final only) no cold or dropped SKUs.
+bundles (same pieces and terms), price and delivery_days match the pricing policy, budget, and (final
+only) no cold or dropped SKUs.
 
 ---
 
@@ -239,9 +276,9 @@ averages. Something is a `confirmed` issue only when both agree.
 | Field | Type | Source | Notes |
 |---|---|---|---|
 | `round` | int | code | Always 1 for now |
-| `avg` | number | code | Mean probability across the 5 bundles |
+| `avg` | number | code | Mean probability across the 20 bundles |
 | `subscore_avgs` | object | code | Mean of the buyer's price / fit / style sub-scores |
-| `attribute_avgs` | object | code | Per category/color/material/size value: mean probability of bundles containing it (a value counts once per bundle). `style` uses the seller analyst's style label for each SKU |
+| `attribute_avgs` | object | code | Per category/color/material/size value: mean probability of bundles containing it (a value counts once per bundle). `style` uses the seller analyst's style label for each SKU. `shipping`, `return_window` and `refund` average the bundles offered on each term |
 | `item_checks[]` | array | model | One entry per item in each bundle rated < 0.5. Entries for other bundles, unknown SKUs or duplicates are dropped |
 | `item_checks[].verdict` | `hurts` \| `neutral` \| `helps` | model | |
 | `item_checks[].dimension` | `category` \| `style` \| `color` \| `material` \| `size` \| `price` \| `none` | model | Why it hurts |

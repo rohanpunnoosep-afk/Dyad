@@ -1,6 +1,6 @@
 # Frontend integration
 
-`frontend/` is the canonical TANDEM Vite/React application in this repository. Its happy-path UI simulates buyer, seller, and middleman messages using the shapes defined in [`../json_formats.md`](../json_formats.md). No service or model API is connected by the frontend. The two workspaces share a local browser session, not a hosted database.
+`frontend/` is the canonical Dyad Vite/React application in this repository. Its happy-path UI simulates buyer, seller, and middleman messages using the shapes defined in [`../json_formats.md`](../json_formats.md). No service or model API is connected by the frontend. The two workspaces share a local browser session, not a hosted database.
 
 ## Deployment configurations
 
@@ -22,7 +22,7 @@ The combined-deployment template is inactive. Its presence does not establish a 
 - `src/contracts.ts` represents the repository's JSON message contract in TypeScript.
 - `src/catalog.ts` resolves inventory image filenames for frontend display, adapts catalog data, and provides the local demo generation and scoring helpers.
 - `src/store.ts` owns the shared session, serialized exchange state, `localStorage`, and `BroadcastChannel` synchronization.
-- `src/main.tsx` owns onboarding, progress, the five-bundle report, ratings and analysis presentation, and the final-offer decision UI.
+- `src/main.tsx` owns onboarding, progress, the twenty-bundle exchange, ratings and analysis presentation, and the final-offer decision UI.
 
 The `image` field remains a filename in inventory and messages. Bundle `images` follow the order of their `skus`. Resolve filenames to frontend assets at the display boundary rather than replacing the wire fields with URLs. Each size is an individual SKU; do not reconstruct a product with a sizes array in the API payload.
 
@@ -31,18 +31,18 @@ The `image` field remains a filename in inventory and messages. Bundle `images` 
 The single-round flow is:
 
 1. Serialize the buyer's selected looks and chat into context: `style`, preferred and avoided colors, `sizes`, `budget`, `occasion`, and `notes`.
-2. The seller provides exactly five distinct bundles with SKU references, image filenames, item totals, and bundle prices.
+2. The seller provides exactly twenty distinct bundles with SKU references, image filenames, item totals, shipping and return terms, and bundle prices from the pricing policy.
 3. The middleman checks the bundles against the contract and buyer constraints.
 4. The buyer returns one rating per bundle: `id`, `probability` between 0 and 1, and an item-specific `reason`.
 5. The seller analyzes the ratings and identifies useful and unsuitable attributes and SKUs.
 6. The seller returns exactly one final offer, including `savings` and `why`; the middleman checks it again.
 7. The buyer returns an `accept` or `reject` decision for that final offer.
 
-The frontend's mock ratings describe purchase chance at the offered price. They are independent estimates rather than a distribution over five choices. Price, fit, and style scores are auxiliary display values, not replacements for contract `probability`. No calibrated model is producing these estimates in the demo.
+The frontend's mock ratings describe purchase chance at the offered price. They are independent estimates rather than a distribution over twenty choices. Price, fit, and style scores are auxiliary display values, not replacements for contract `probability`. No calibrated model is producing these estimates in the demo.
 
 Sizes, budget, avoided colors, and explicit notes are hard rules. Offer variation comes from valid combinations and softer style, fabric, coverage, and price tradeoffs; it must not introduce wrong-size or over-budget offers. Only in-stock SKUs may appear. Item totals and savings are computed from catalog prices. Seller item and discount limits also apply.
 
-Replace the local simulation and progress timing with validated service responses at each stage. Keep the five-bundle ratings → seller analysis → one final offer sequence; accepting an initial bundle is not the final contract decision. Preserve the same agreed SKUs, sizes, and total in both workspaces.
+Replace the local simulation and progress timing with validated service responses at each stage. Keep the twenty-bundle ratings → seller analysis → one final offer sequence; accepting an initial bundle is not the final contract decision. Preserve the same agreed SKUs, sizes, and total in both workspaces.
 
 The current store only synchronizes tabs/windows sharing the same browser profile and origin. A backend integration will need a shared session identifier and server updates for separate devices or browser profiles. Preset role buttons provide no authenticated identity. The local JSON catalog and browser session do not provide server persistence, stock reservation, payment, or fulfillment.
 
